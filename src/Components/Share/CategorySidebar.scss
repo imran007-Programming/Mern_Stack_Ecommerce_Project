@@ -1,0 +1,82 @@
+.sidebar-wraper .side-bar {
+  position: sticky;
+  top: 100px;
+ 
+}
+
+.sidebar-wraper .sidebarCard {
+  padding: 25px;
+
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  .h_line {
+    padding: 2px;
+    background-color: black;
+    margin-top: 10px;
+  }
+  hr {
+    max-width: 100%;
+    width: 100%;
+    border: 0.1rem solid black;
+    background: black;
+  }
+
+  .y_line {
+    padding: 1px;
+    background-color: black;
+    margin-top: 10px;
+  }
+  .cat-list .all-cat h2 {
+    font-size: 15px;
+    cursor: pointer;
+    margin: 3px;
+  }
+  .cat-list .all-cat span {
+    background-color: #3bc17729;
+    padding: 5px;
+    border-radius: 1rem;
+    color: black;
+    font-size: 13px;
+  }
+  .cat-list .all-cat div {
+    border: 1px solid rgba(0, 0, 0, 0.093);
+    margin-top: 6px;
+    padding: 4px;
+    height: 50px;
+  }
+  .cat-list .all-cat div:hover {
+    border: 1px solid #9D44C0;
+    box-shadow: rgba(0, 0, 0, 0.063) 0px 5px 15px;
+  }
+  .range p {
+    color: black;
+  }
+  .filters {
+    padding: 25px 0px;
+    margin-left: -10px;
+    .filter_color {
+      max-height: 200px;
+      overflow-y: scroll;
+    }
+    .filter_color::-webkit-scrollbar {
+      width: 2px !important;
+    }
+    .filter_color::-webkit-scrollbar-thumb {
+      background: #ccc;
+    }
+  }
+  #Rangeslider {
+    background-color: black;
+    .range-slider__range {
+      background: black;
+      height: 0px;
+    }
+    .range-slider__thumb {
+      background: black;
+      height:20px;
+      width: 20px;
+    }
+  }
+}
+

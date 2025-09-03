@@ -1,0 +1,22 @@
+.scroll-to-top {
+  .scroll-to-top-btn {
+    
+    position: fixed;
+    bottom:0px;
+    right: 6px;
+    background-color:white;
+    color: black;
+    border: 1px solid black;
+   
+    padding:13px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 999;
+ 
+  }
+}
+
+.scroll-to-top-btn:hover {
+  background-color: black;
+  color: white;
+}

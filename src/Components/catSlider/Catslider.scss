@@ -1,0 +1,122 @@
+.catSlideSection {
+  .cat_slider_main {
+    // overflow: hidden;
+    position: relative;
+
+    .slick-arrow {
+      position: absolute;
+      top: 47%;
+      width: 50px !important;
+      height: 50px !important;
+      border-radius: 50% !important;
+      background-color: #f2f2f2;
+
+      transition: all 0.2s ease-in-out;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      z-index: 1000 !important;
+      zoom: 80%;
+      z-index: 1 !important
+    }
+
+    .slick-next {
+      right: 0px !important;
+      top: -50px !important;
+    }
+
+    .slick-prev {
+      right: 60px !important;
+      left: inherit !important;
+      top: -50px !important;
+    }
+
+    .slick-prev:before {
+      content: "\f177" !important;
+      font-family: FontAwesome !important;
+      font-size: 20px;
+      color: black;
+    }
+
+    .slick-next:before {
+      content: "\f178" !important;
+      font-family: FontAwesome !important;
+      font-size: 20px;
+      color: black;
+    }
+
+    .slick-prev:hover {
+      background-color: #00cdb8 !important;
+    }
+
+    .slick-next:hover {
+      background-color: #00cdb8 !important;
+    }
+
+    .slick-arrow:hover::before {
+      color: #fff !important;
+    }
+
+    .slick-dots {
+      position: absolute;
+      bottom: 50px !important;
+
+      button::before {
+        font-size: 20px;
+      }
+
+      .slick-active button:before {
+        color: #00cdb8;
+      }
+    }
+
+    .slick-slide {
+      padding-right: 20px;
+      width: 200px !important; // Adjust width here
+      height: 200px !important; // Adjust height here
+      margin-bottom: 10px;
+    }
+  }
+
+  .cat_slider_main .item {
+    padding: 10px 0px;
+    margin-left: 8px;
+
+    img {
+      border-radius: 50%; // Make image round
+      display: inline-block;
+      max-width: 80px;
+    }
+
+    .info {
+      flex-direction: column;
+      position: relative;
+      background: #f4f6fa;
+      text-align: center;
+      border-radius: 50%; // Make item round
+      padding: 20px 0px 18px 0px;
+      margin-bottom: 20px;
+      width: 160px; // Adjust width here to fit the round shape
+      height: 160px; // Adjust height here to fit the round shape
+      transition: all 0.3s ease-in-out;
+    }
+  }
+
+  .cat_slider_main .item:hover .info {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+
+  .cat_slider_main .item:hover .info h5 {
+    transition: all 0.3s ease-out;
+  }
+
+  .cat_slider_main img:hover {
+    transition: all 0.5s ease-in-out;
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .catSlideSection .cat_slider_main .slick-slide {
+      height: auto !important; 
+      margin-bottom: 10px; 
+    }
+  }
+}

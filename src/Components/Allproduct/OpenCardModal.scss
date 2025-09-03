@@ -1,0 +1,236 @@
+.details_slider{
+    padding-top: 17px;
+     .item{
+        width:60%;
+     }
+    .item img{
+        // max-width:40%;
+        width:auto;
+        // padding:6px;
+        object-fit: contain;
+    }
+
+
+  
+   .slick-slide.slick-current img{
+    
+    border: 4px solid #a2d2c9;
+    border-radius: 17px;
+    background: rgba(128, 128, 128, 0.062);
+    overflow: hidden;
+   
+    
+   }
+   
+  .slick-slide{
+    padding: 10px !important;
+  }
+
+   .slick-slide img{
+    border-radius: 17px;
+    display: block
+   }
+   
+  //  .slick-slide .slick-current{
+  //   border: 1px solid #00cdb8;
+  //  }
+
+   
+     .slick-arrow{
+        position: relative;
+        z-index: 1000 !important;
+        zoom: 80% !important;
+     }
+     
+     
+       
+     
+     .slick-arrow.slick-prev{
+        
+        background: #F2F3F4;
+        opacity: 0;
+        border-radius: 40px;
+        width: 40px;
+        height: 40px;
+       
+        position: absolute;
+        left: -10px;
+        
+        transition: all 0.3s ease-in-out;
+        
+    }
+    
+       
+    .slick-arrow.slick-next{
+        position: absolute;
+         right: 10px;
+        background: #F2F3F4;
+        opacity: 0;
+        border-radius: 40px;
+        width: 40px;
+        height: 40px;
+       
+        transition: all 0.3s ease-in-out;
+        
+        
+    }
+
+    .slick-next.slick-disabled{
+      cursor: no-drop;
+     }
+    
+     
+     .slick-arrow.slick-next:before{
+       
+        content:"\f178";
+        color: #7E7E7E;
+        font-size: 20px;
+        font-family: fontAwesome;
+     }
+   
+     .slick-arrow.slick-prev:before{
+        color: #7E7E7E;
+        content:"\f177";
+        font-size: 20px;
+        font-weight: 400;
+        font-family: fontAwesome;
+     }
+   
+     
+   
+    .slick-arrow.slick-next:hover{
+      
+        background-color: #3BB77E;
+        
+       
+        
+    }
+    .slick-arrow:hover.slick-next:before{
+       
+      
+        color: white;
+        
+     }
+    .slick-arrow.slick-prev:hover{
+      
+        background-color: #3BB77E;
+        
+       
+        
+    }
+    .slick-arrow:hover.slick-prev:before{
+       
+      
+        color: white;
+        
+     }
+
+     
+
+
+
+}
+.details_slider:hover .slick-prev{
+  opacity: 1;
+  transform:translate(1.2)
+}
+.details_slider:hover .slick-next{
+  opacity: 1;
+  transform:translate(1.2)
+}
+
+.product_size{
+       width: 100%;
+       height: auto;
+      .list-items li{
+        margin-right:5px;
+        a{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 5px;
+            font-size: 14px !important;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+           
+        }
+
+        
+        // a:hover{
+        //     background: black;
+        //     color: white;
+        // }
+      }
+    
+    //   .active{
+    //     background: white;
+    //     color: black;
+    // }
+
+}
+.inc_dec{
+    width: 100%;
+    height:auto;
+   
+    .counter{
+        width:80px ;
+        height: 40px;
+        border: 1px solid #00cdb8;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      
+        
+        input{
+            width: 80px;
+            height: 40px;
+            padding: 5px;
+            border: 0px;
+            outline: none !important;
+            text-align: center;
+
+            
+        }
+
+        
+       
+    }
+}
+.counter .arrow{
+    position: absolute;
+    cursor: pointer;
+    opacity: 0.5;
+}
+.counter .arrow.up{
+    top: 0px;
+  
+    right:10px;
+    
+     
+   
+}
+.counter .arrow.down{
+    bottom: 0px;
+     right: 10px; 
+  }
+
+.counter .arrow.down svg{
+   color: gray;
+  }
+.counter .arrow.up svg{
+   color: gray;
+  }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,0 +1,111 @@
+.product-card {
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+.product-details {
+  position: relative;
+}
+
+.imgwraper {
+  position: relative;
+  overflow: hidden;
+  
+}
+
+
+.add-to-cart-button {
+  position: absolute;
+  bottom: -50px; // Start hidden below the product card
+  left: 0;
+  right: 0;
+  transition: bottom 0.3s ease-in-out;
+  
+}
+.product-card:hover .add-to-cart-button {
+  bottom: 0; // Slide up into view
+}
+.add-to-cart-button-mobile {
+  margin-top: 50px;
+  position: absolute;
+  bottom: 0; /* Always visible at the bottom */
+  left: 0;
+  right: 0;
+  height:35px;
+  transition: height 0.3s ease-in-out;
+}
+
+.product-card:hover .add-to-cart-button-mobile {
+  height: 40px; /* Increase height on hover */
+}
+
+
+
+
+.product-details {
+  position: relative;
+}
+
+.tooltip {
+  color: red; /* Example color */
+}
+
+
+
+.imgwraper img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 280px;
+  height:280px;
+  transition: opacity 0.7s ease-in-out;
+  
+
+}
+
+.imgwraper .overlay {
+  position: absolute;
+  top: 52px;
+  left: 0px;
+  width: 100%;
+  padding: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.imgwraper:hover .overlay {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.imgwraper .overlay ul {
+  background: #000;
+  width: 130px;
+  height: 40px;
+  border-radius: 5px;
+}
+
+.imgwraper .overlay ul li {
+  display: block;
+  padding: 10px;
+  color: white;
+}
+
+.imgwraper .overlay ul li:nth-child(2) {
+  border-left: 1px solid rgba(0, 139, 139, 0.305);
+}
+
+.imgwraper .overlay ul li:nth-child(3) {
+  border-left: 1px solid rgba(0, 139, 139, 0.305);
+}
+
+.product-details:hover {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
