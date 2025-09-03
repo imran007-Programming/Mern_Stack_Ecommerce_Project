@@ -42,5 +42,6 @@ Before starting, make sure you have the following installed:
 First, clone the repository to your local machine:
 
 ```bash
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/imran007-Programming/Mern_Stack_Ecommerce_Project.git
+cd Mern_Stack_Ecommerce_Project
+npm install
