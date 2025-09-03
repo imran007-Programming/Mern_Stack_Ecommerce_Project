@@ -45,7 +45,5 @@ First, clone the repository to your local machine:
 git clone https://github.com/imran007-Programming/Mern_Stack_Ecommerce_Project.git
 cd Mern_Stack_Ecommerce_Project
 npm install
-
-
-```bash
+```
 
