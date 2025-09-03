@@ -46,7 +46,8 @@ git clone https://github.com/imran007-Programming/Mern_Stack_Ecommerce_Project.g
 cd Mern_Stack_Ecommerce_Project
 npm install
 ```
-```crediantials
+```bash
+crediantials
 Email:Hximranhasan@gmail.com(admin)
 Pass:12345
 
