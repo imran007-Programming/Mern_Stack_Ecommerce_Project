@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import toast from "react-hot-toast";
-import { AddproductApi, GetAllproductsApi, filterproductsApi, newarivalproductsApi, getSingleProductApi, UpdateproductApi, DeleteImageApi, deleteproductsApi, searchProductApi, addReviewApi, getReviewApi, DeleteReviewApi, getSimilarProductsApi, resetfilterproductsApi } from "../../../api/Productapi/Productapi";
+import { AddproductApi, GetAllproductsApi, filterproductsApi, newarivalproductsApi, getSingleProductApi, UpdateproductApi, DeleteImageApi, deleteproductsApi, searchProductApi, getSimilarProductsApi, resetfilterproductsApi } from "../../../api/Productapi/Productapi";
 
 
 

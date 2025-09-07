@@ -23,3 +23,8 @@ export const AdminLoggedInApi=async(header)=>{
 export const adminLoggedOut=async(header)=>{
    return await commonrequest("GET",`${BASE_URL}/adminauth/api/logout`,"",header,"admin")
 }
+
+/* admin get all user */
+export const adminGetAlluserApi=async(header)=>{
+   return await commonrequest("GET",`${BASE_URL}/userauth/api/getalluser`,"",header,"admin")
+}

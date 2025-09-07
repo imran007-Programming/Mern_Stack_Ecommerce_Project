@@ -1,0 +1,12 @@
+@keyframes shine {
+  0% {
+    transform: translateX(-150%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(25deg);
+  }
+}
+
+.group-hover\:animate-shine {
+  animation: shine 1.5s infinite;
+}

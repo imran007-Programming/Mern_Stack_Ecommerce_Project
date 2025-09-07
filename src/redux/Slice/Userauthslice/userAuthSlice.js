@@ -7,7 +7,7 @@ import {
     userLoggedInApi,
     userLoginApi,
     userLogoutApi,
-    userPasswordResetApi,
+    // userPasswordResetApi,
     userRegisterApi,
 } from "../../../api/Userapi/userAPi";
 

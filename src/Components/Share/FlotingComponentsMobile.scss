@@ -8,6 +8,7 @@
    z-index:10;
    height: 70px;
    
+   
    justify-content: space-between;
    small{
     font-size: 10px;
@@ -24,9 +25,15 @@
       padding: 3px;
       cursor: pointer;
 
+    &:first-child {
+      
+      
+      
+    }
+    
     &:last-child {
       border-right: none;
-      padding-left: 1rem;
+     
     }
   }
 

@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   DeleteReviewApi,
   addReviewApi,
+  getAllReviewApi,
   getReviewApi,
 } from "../../../api/ReviewApi/reviewApi.js";
 import toast from "react-hot-toast";
@@ -35,6 +36,22 @@ export const getReview = createAsyncThunk("getReview", async (data) => {
   }
 });
 
+export const getAllReview = createAsyncThunk(
+  "getAllReview",
+  async (thunkApi) => {
+    try {
+      const response = await getAllReviewApi();
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return thunkApi.rejectWithValue("error");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 ///delete review slice///
 export const DeleteReview = createAsyncThunk("DeleteReview", async (data) => {
   try {
@@ -54,16 +71,15 @@ export const ReviewSlice = createSlice({
   name: "ReviewSlice",
   initialState: {
     productReviewData: [],
+    allReviewData: [],
     DeleteproductReviewData: [],
     GetproductReviewData: [],
+    allReviewLoading: false,
+
     reviewLoading: false,
     getReviewLoading: false,
     DeleteReviewLoading: false,
     error: null,
-   
-   
-   
-   
   },
 
   extraReducers: (builder) => {
@@ -94,6 +110,19 @@ export const ReviewSlice = createSlice({
         state.error = action.payload;
       })
 
+      /// GEt all product review ///
+      .addCase(getAllReview.pending, (state) => {
+        state.allReviewLoading = true;
+      })
+      .addCase(getAllReview.fulfilled, (state, action) => {
+        state.allReviewLoading = false;
+        state.allReviewData = action.payload;
+      })
+      .addCase(getAllReview.rejected, (state, action) => {
+        state.allReviewLoading = false;
+        state.error = action.payload;
+      })
+
       /// Delete product review ///
       .addCase(DeleteReview.pending, (state) => {
         state.DeleteReviewLoading = true;
@@ -108,4 +137,4 @@ export const ReviewSlice = createSlice({
       });
   },
 });
-export default ReviewSlice.reducer
+export default ReviewSlice.reducer;

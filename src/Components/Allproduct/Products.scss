@@ -1,39 +1,44 @@
 .product-card {
   position: relative;
   overflow: hidden;
-}
-
-
-
-.product-details {
-  position: relative;
+  width: auto;
+  height: auto;
 }
 
 .imgwraper {
   position: relative;
   overflow: hidden;
   
+
+  .product-image {
+    width: 100%;
+    
+    object-fit: inherit;
+    border-radius: 10px 10px 0px 0px;
+  }
 }
 
+.product-details {
+  position: relative;
+}
 
 .add-to-cart-button {
   position: absolute;
-  bottom: -50px; // Start hidden below the product card
+  bottom: -50px;
   left: 0;
   right: 0;
   transition: bottom 0.3s ease-in-out;
-  
 }
 .product-card:hover .add-to-cart-button {
-  bottom: 0; // Slide up into view
+  bottom: 0;
 }
 .add-to-cart-button-mobile {
   margin-top: 50px;
   position: absolute;
-  bottom: 0; /* Always visible at the bottom */
+  bottom: 0;
   left: 0;
   right: 0;
-  height:35px;
+  height: 35px;
   transition: height 0.3s ease-in-out;
 }
 
@@ -41,43 +46,43 @@
   height: 40px; /* Increase height on hover */
 }
 
-
-
-
 .product-details {
   position: relative;
 }
 
 .tooltip {
-  color: red; /* Example color */
-}
-
-
-
-.imgwraper img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 280px;
-  height:280px;
-  transition: opacity 0.7s ease-in-out;
-  
-
+  color: black;
 }
 
 .imgwraper .overlay {
   position: absolute;
-  top: 52px;
-  left: 0px;
-  width: 100%;
-  padding: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  top: -20px;
+  right: -100%;
+  width: auto;
+  padding: 20px;
   opacity: 0;
   transform: scale(0.8);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease, right 0.6s ease;
+}
+
+.product-card:hover .imgwraper .overlay {
+  right: 0;
+  opacity: 1;
+  transform: scale(1);
+}
+.discount-badge {
+  position: absolute;
+  top: 1px; /* Distance from the top */
+  left: 2px; /* Distance from the left */
+  background-color: #6a0dad; /* Purple background */
+  color: white; /* White text */
+  font-weight: 400; /* Bold text */
+  padding: 2px 5px; /* Padding inside the badge */
+  border-radius: 10px 10px 10px 0px;
+
+  /* Rounded corners */
+  font-size: 12px; /* Adjust font size */
+  z-index: 4; /* Ensure it's on top of other elements */
 }
 
 .imgwraper:hover .overlay {
@@ -86,16 +91,20 @@
 }
 
 .imgwraper .overlay ul {
-  background: #000;
-  width: 130px;
-  height: 40px;
+  background: rgb(207, 198, 198);
+  color: red;
+  width: auto;
+  padding: 0 2px;
   border-radius: 5px;
 }
 
 .imgwraper .overlay ul li {
   display: block;
-  padding: 10px;
+  align-items: center;
+  padding: 4px;
   color: white;
+  display: flex;
+  justify-content: space-between;
 }
 
 .imgwraper .overlay ul li:nth-child(2) {
