@@ -37,7 +37,7 @@ const Banner = () => {
   };
 
   return (
-    <div className="rounded-3xl w-full sm:pt-16 pt-8">
+    <div className="rounded-3xl w-full sm:pt-16 pt-3">
       {loading ? (
         // Skeleton Loader
         <div className="animate-pulse w-full rounded-3xl overflow-hidden">

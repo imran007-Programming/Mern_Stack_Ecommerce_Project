@@ -14,9 +14,6 @@ import { resetfilterProducts } from "../../../redux/Slice/ProductSlice/ProductSl
 import { adminGetCategory } from "../../../redux/Slice/categorySlice/categorySlice";
 
 const CategorySidebar = (props) => {
-
-  console.log(props)
-
   const [value, setValue] = useState([6, 3000]);
   const [brand, setBrand] = useState([]);
   const [params] = useSearchParams();
@@ -46,39 +43,41 @@ const CategorySidebar = (props) => {
     dispatch(adminGetCategory());
   }, [dispatch]);
 
-useEffect(() => {
-  if (CategoryData.length > 0) {
-    if (categoryid) {
-      // ✅ Category-wise filter
-      const filtercategory = CategoryData.find((cat) => cat._id === categoryid);
+  useEffect(() => {
+    if (CategoryData.length > 0) {
+      if (categoryid) {
+        // ✅ Category-wise filter
+        const filtercategory = CategoryData.find(
+          (cat) => cat._id === categoryid
+        );
 
-      const uniqueBrandArray = filtercategory?.brands?.filter(
-        (brand, index, self) => self.findIndex((b) => b === brand) === index
-      );
-      setBrand(uniqueBrandArray || []);
+        const uniqueBrandArray = filtercategory?.brands?.filter(
+          (brand, index, self) => self.findIndex((b) => b === brand) === index
+        );
+        setBrand(uniqueBrandArray || []);
 
-      setSizes(
-        filtercategory?.products?.reduce((acc, curr) => {
-          curr.sizes.forEach((size) => {
-            if (!acc.includes(size)) acc.push(size);
-          });
-          return acc;
-        }, []) || []
-      );
-    } else {
-      // ✅ All Products page → collect from ALL categories
-      const allBrands = CategoryData.flatMap((cat) => cat.brands || []);
-      const uniqueBrands = [...new Set(allBrands)];
-      setBrand(uniqueBrands);
+        setSizes(
+          filtercategory?.products?.reduce((acc, curr) => {
+            curr.sizes.forEach((size) => {
+              if (!acc.includes(size)) acc.push(size);
+            });
+            return acc;
+          }, []) || []
+        );
+      } else {
+        // ✅ All Products page → collect from ALL categories
+        const allBrands = CategoryData.flatMap((cat) => cat.brands || []);
+        const uniqueBrands = [...new Set(allBrands)];
+        setBrand(uniqueBrands);
 
-      const allSizes = CategoryData.flatMap((cat) =>
-        cat.products?.flatMap((p) => p.sizes || [])
-      );
-      const uniqueSizes = [...new Set(allSizes)];
-      setSizes(uniqueSizes);
+        const allSizes = CategoryData.flatMap((cat) =>
+          cat.products?.flatMap((p) => p.sizes || [])
+        );
+        const uniqueSizes = [...new Set(allSizes)];
+        setSizes(uniqueSizes);
+      }
     }
-  }
-}, [categoryid, CategoryData]);
+  }, [categoryid, CategoryData]);
 
   useEffect(() => {
     props.filterByPrice(value[0], value[1]);
@@ -213,7 +212,7 @@ useEffect(() => {
       <div className="md:hidden block ">
         <div className="flex items-center justify-between mt-6 px-4 ">
           <Select
-            className="w-48 z-10!"
+            className="w-48 z-50!"
             placeholder="Sort by"
             defaultValue={props.selectedOption}
             onChange={props.setSelectedOption}
@@ -229,112 +228,120 @@ useEffect(() => {
           </div>
         </div>
 
-        {filteropen && (
-          <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex justify-end">
-            <div
-              ref={filterRef}
-              className="w-3/4 max-w-sm bg-white h-full shadow-xl p-4 overflow-y-auto"
-            >
-              <div className="flex justify-between items-center border-b pb-2 mb-4">
-                <h1 className="text-lg font-semibold">Filters</h1>
-                <RxCross1
-                  className="cursor-pointer"
-                  size={22}
-                  onClick={() => setFilterOpen(false)}
-                />
+        {/* Drawer + Overlay (always mounted) */}
+        <div
+          className={`fixed inset-0 z-50 ${
+            filteropen ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
+          {/* Overlay */}
+          <div
+            className={`absolute inset-0 bg-black transition-opacity duration-700 ${
+              filteropen ? "opacity-50" : "opacity-0"
+            }`}
+            onClick={() => setFilterOpen(false)}
+          />
+
+          {/* Drawer */}
+          <div
+            ref={filterRef}
+            className={`absolute right-0 top-0 h-full w-3/4 max-w-sm bg-white shadow-xl overflow-y-auto transform-gpu will-change-transform
+                transition-transform duration-700 ease-in-out
+                ${filteropen ? "translate-x-0" : "translate-x-full"}`}
+          >
+            {/* Header */}
+            <div className="pt-40 sticky top-0 bg-white z-10 flex justify-between items-center border-b p-4">
+              <h1 className="text-lg font-semibold">Filters</h1>
+              <RxCross1
+                className="cursor-pointer"
+                size={22}
+                onClick={() => setFilterOpen(false)}
+              />
+            </div>
+
+            {/* Content */}
+            <div className="p-4">
+              <div className="space-y-2 mb-6">
+                {props?.CategoryData?.map((el) => (
+                  <Link key={el._id} to={`/allproducts?categoryId=${el._id}`}>
+                    <div className="flex items-center justify-between hover:bg-gray-100 px-2 py-1 rounded-md">
+                      <h2 className="text-gray-700">{el.categoryName}</h2>
+                    </div>
+                  </Link>
+                ))}
               </div>
 
-              <div>
-                <div className="space-y-2">
-                  {props?.CategoryData?.map((el) => (
-                    <Link
-                      key={el._id}
-                      to={`/allproducts?categoryId=${el._id}`}
-                    >
-                      <div className="flex items-center justify-between hover:bg-gray-100 px-2 py-1 rounded-md">
-                        <h2 className="text-gray-700">{el.categoryName}</h2>
-                      </div>
-                    </Link>
+              {/* Price */}
+              <div className="bg-white shadow-md rounded-xl p-4 mb-6">
+                <h3 className="text-xl font-semibold mb-3">Filter By Price</h3>
+                <RangeSlider
+            value={value}
+            onInput={setValue}
+            min={6}
+            max={3000}
+            step={10}
+            className="custom-slider w-full "
+          />
+                <div className="flex justify-between mt-2 text-gray-700">
+                  <span>
+                    <strong>From:</strong> ${value[0]}
+                  </span>
+                  <span>
+                    <strong>To:</strong> ${value[1]}
+                  </span>
+                </div>
+              </div>
+
+              {/* Brand */}
+              <div className="bg-white shadow-md rounded-xl p-4 mb-6">
+                <h3 className="text-xl font-semibold mb-3">Filter By Brands</h3>
+                <RadioGroup
+                  value={selectedBrand}
+                  onChange={(e) => filterByBrand(e.target.value)}
+                >
+                  {brand?.map((item, index) => (
+                    <FormControlLabel
+                      key={index}
+                      value={item}
+                      control={<Radio />}
+                      label={item}
+                    />
                   ))}
-                </div>
+                </RadioGroup>
+              </div>
 
-                <div className="bg-white shadow-md rounded-xl p-4 mb-6">
-                  <h3 className="text-xl font-semibold mb-3">
-                    Filter By Price
-                  </h3>
-                  <RangeSlider
-                    value={value}
-                    onInput={setValue}
-                    min={6}
-                    max={3000}
-                    step={10}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between mt-2 text-gray-700">
-                    <span>
-                      <strong>From:</strong> ${value[0]}
-                    </span>
-                    <span>
-                      <strong>To:</strong> ${value[1]}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Filter by Brand */}
-                <div className="bg-white shadow-md rounded-xl p-4 mb-6">
-                  <h3 className="text-xl font-semibold mb-3">
-                    Filter By Brands
-                  </h3>
-                  <RadioGroup
-                    value={selectedBrand}
-                    onChange={(e) => filterByBrand(e.target.value)}
-                  >
-                    {brand?.map((item, index) => (
-                      <FormControlLabel
-                        key={index}
-                        value={item}
-                        control={<Radio />}
-                        label={item}
-                      />
-                    ))}
-                  </RadioGroup>
-                </div>
-
-                {/* Filter by Sizes */}
-                <div className="bg-white shadow-md rounded-xl p-4">
-                  <h3 className="text-xl font-semibold mb-3">
-                    Filter By Sizes
-                  </h3>
-                  <RadioGroup
-                    value={selectedSize}
-                    onChange={(e) => filterBySize(e.target.value)}
-                  >
-                    {sizes?.map((item, index) => (
-                      <FormControlLabel
-                        key={index}
-                        value={item}
-                        control={<Radio />}
-                        label={item}
-                      />
-                    ))}
-                  </RadioGroup>
-                  <button
-                    onClick={handlereset}
-                    disabled={!isResetEnabled}
-                    className={`mt-3 w-full px-4 py-2 border rounded-md transition 
-              ${
-                isResetEnabled
-                  ? "text-white bg-black hover:bg-gray-800"
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed"
-              }`}
-                  >
-                    Reset All Filters
-                  </button>
-                </div>
+              {/* Sizes */}
+              <div className="bg-white shadow-md rounded-xl p-4">
+                <h3 className="text-xl font-semibold mb-3">Filter By Sizes</h3>
+                <RadioGroup
+                  value={selectedSize}
+                  onChange={(e) => filterBySize(e.target.value)}
+                >
+                  {sizes?.map((item, index) => (
+                    <FormControlLabel
+                      key={index}
+                      value={item}
+                      control={<Radio />}
+                      label={item}
+                    />
+                  ))}
+                </RadioGroup>
+                <button
+                  onClick={handlereset}
+                  disabled={!isResetEnabled}
+                  className={`mt-3 w-full px-4 py-2 border rounded-md transition
+            ${
+              isResetEnabled
+                ? "text-white bg-black hover:bg-gray-800"
+                : "bg-gray-200 text-gray-500 cursor-not-allowed"
+            }`}
+                >
+                  Reset All Filters
+                </button>
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </>
   );

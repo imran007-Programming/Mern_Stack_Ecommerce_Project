@@ -63,7 +63,7 @@ const Catslider = () => {
   }, [emblaApi]);
 
   return (
-    <div className="catSlideSection">
+    <div className="catSlideSection pt-10">
       <h1 className="text-2xl text-start font-semibold my-3">
         Features Categories
       </h1>

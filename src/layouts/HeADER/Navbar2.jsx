@@ -196,7 +196,7 @@ const Navbar2 = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full bg-white z-20 shadow-sm">
+      <nav className="fixed top-0 z-100 left-0 w-full bg-white  shadow-sm">
         <div className="flex justify-between items-center px-4 py-3">
           {/* Left: Logo + Menu Icon */}
           <div className="flex items-center">
@@ -336,12 +336,12 @@ const Navbar2 = () => {
         </div>
 
         {/* Mobile Search */}
-        {showSearchBar && (
+    
           <div className="md:hidden relative px-4 pb-2">
             <div className="flex items-center">
               <input
                 type="text"
-                className="py-2 px-4 w-full rounded border border-gray-300 focus:outline-none placeholder:text-sm font-thin"
+                className="py-2 px-4 w-full rounded sm:border lg:border border-gray-300 focus:outline-none placeholder:text-sm font-thin"
                 placeholder="Search for products"
                 onChange={handleSearch}
                 value={search}
@@ -386,12 +386,12 @@ const Navbar2 = () => {
               </div>
             )}
           </div>
-        )}
+      
 
         {/* Navbar Links */}
         <div
           className={`${
-            isVisible ? "hidden" : "block border-t border-gray-200"
+            isVisible ? "hidden" : "block  "
           }`}
         >
           <Navbar />

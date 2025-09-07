@@ -1,0 +1,1 @@
+@keyframes shine{0%{transform:translate(-150%) rotate(25deg)}to{transform:translate(150%) rotate(25deg)}}.group-hover\:animate-shine{animation:shine 1.5s infinite}

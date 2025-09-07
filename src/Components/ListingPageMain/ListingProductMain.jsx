@@ -95,7 +95,7 @@ const ListingProductMain = () => {
     <div className="pt-1 container mx-auto sm:px-10 px-2">
       <div className="hidden md:block mt-10"></div>
 
-      <div className="w-full flex justify-center mt-16 px-4">
+      <div className="w-full flex justify-center sm:mt-16 mt-0 px-4">
         {/* Sort By Dropdown - Left side */}
         <div className="w-64  sm:flex hidden justify-center items-center gap-x-2 ml-auto ">
           <span>Short By</span>
@@ -105,7 +105,7 @@ const ListingProductMain = () => {
             onChange={setSelectedOption}
             options={options}
             isSearchable={false}
-            className="w-auto"
+            className="w-auto  z-50 "
           />
         </div>
 

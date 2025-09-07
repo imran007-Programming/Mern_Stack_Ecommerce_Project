@@ -1,0 +1,1 @@
+import{j as e,Q as t}from"./index-vqzppHW-.js";const n=({margin:s})=>e.jsx("div",{style:{display:"flex",justifyContent:"center",alignItems:"center"},children:e.jsx(t,{className:`${s}`,type:"bars",color:"black"})});export{n as L};
