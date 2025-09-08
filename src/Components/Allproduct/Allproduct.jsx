@@ -39,7 +39,7 @@ const Allproduct = () => {
 
   return (
     <div className="all-products  ">
-      <h1 className="text-2xl text-start mb-9 ml-2 ">Recommended For You</h1>
+      <h1 className="text-2xl text-start mb-9 ">Recommended For You</h1>
 
       <div className="">
         {

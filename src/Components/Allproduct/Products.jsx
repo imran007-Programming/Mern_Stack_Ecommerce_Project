@@ -21,7 +21,7 @@ const Products = ({ data }) => {
   const [deleteWishListLoading, seDeleteWishListLoading] = useState(false);
   const [localWishlist, setLocalWishlist] = useState([]);
   const [imageSrc, setImageSrc] = useState(data.images[0]);
-
+  const [activeId, setActiveId] = useState(null); 
   const dispatch = useDispatch();
   const Navigate = useNavigate();
 
@@ -98,25 +98,30 @@ const Products = ({ data }) => {
        
         
         {/* Image + Hover Overlay */}
+ <div
+  className="relative"
+  onClick={() => setActiveId(activeId === data._id ? null : data._id)} // ✅ toggle overlay on tap
+>
+  <LazyLoad once placeholder={<ImageSkeleton />} debounce={100}>
+    <img
+      className="product-image sm:h-[280px] h-[180px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      src={imageSrc}
+      alt={data.productName}
+    />
+  </LazyLoad>
 
-        <div
-          className="relative"
-          onMouseEnter={handleHover}
-          onMouseLeave={handleMouseLeave}
-        >
-          
-            <LazyLoad once placeholder={<ImageSkeleton />} debounce={100}>
-              <img
-                className="product-image sm:h-[280px] h-[180px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                src={imageSrc}
-                alt={data.productName}
-              />
-            </LazyLoad>
-        
-
-          {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-            {/* Wishlist Button */}
+  {/* Hover + Mobile Overlay */}
+  <div
+    className={`absolute inset-0 bg-black/40 transition-opacity duration-300 flex items-center justify-center gap-2 sm:gap-3
+      ${
+        activeId === data._id
+          ? "opacity-100"
+          : "opacity-0 group-hover:opacity-100"
+      }
+    `}
+  >
+    {/* Wishlist Button */}
+    {/* Wishlist Button */}
             {isInWishlist(data._id) ? (
               <button
                 onClick={() => removeFromWishlistHandler(data._id)}
@@ -131,43 +136,54 @@ const Products = ({ data }) => {
             ) : (
               <button
                 onClick={() => addToWishlistHandler(data._id)}
-                className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+                className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
               >
                 {isWishListLoading ? (
-                  <ReactLoading type="spin" height={18} width={18} color="black" />
+                  <ReactLoading
+                    type="spin"
+                    height={18}
+                    width={18}
+                    color="black"
+                  />
                 ) : (
-                  <FaRegHeart  size={20} className="text-gray-700 cursor-pointer" />
+                  <FaRegHeart
+                    size={15}
+                    className="text-gray-700 cursor-pointer"
+                  />
                 )}
               </button>
             )}
 
-            {/* Add to Cart */}
-            {data.quantity === 0 ? (
-              <button className="p-3 bg-gray-400 text-white rounded-full cursor-not-allowed">
-                OUT
-              </button>
-            ) : (
-              <button
-                onClick={() => handleAddtoCart(data._id, 1)}
-                className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
-              >
-                {isLoading ? (
-                  <ReactLoading type="spin" height={18} width={18} color="black" />
-                ) : (
-                  <ShoppingCart className="cursor-pointer" size={20} />
-                )}
-              </button>
-            )}
+    {/* Add to Cart */}
+    {data.quantity === 0 ? (
+      <button className="p-2 sm:p-3 bg-gray-400 text-white rounded-full cursor-not-allowed text-xs sm:text-base">
+        OUT
+      </button>
+    ) : (
+      <button
+        onClick={() => handleAddtoCart(data._id, 1)}
+        className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+      >
+        {isLoading ? (
+          <ReactLoading type="spin" height={14} width={14} color="black" />
+        ) : (
+          <ShoppingCart className="cursor-pointer" size={16} />
+        )}
+      </button>
+    )}
 
-            {/* Quick View */}
-            <button
-              onClick={() => setModalOpen(true)}
-              className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
-            >
-              <Eye className="cursor-pointer" size={20} />
-            </button>
-          </div>
-        </div>
+    {/* Quick View */}
+    <button
+      onClick={() => setModalOpen(true)}
+      className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+    >
+      <Eye className="cursor-pointer" size={16} />
+    </button>
+  </div>
+</div>
+
+
+
        <Link to={`/allproduct/${data._id}`}>
         {/* Product Info */}
         <div className="info p-3">

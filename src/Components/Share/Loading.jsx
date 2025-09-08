@@ -10,7 +10,7 @@ const Loading = ({margin}) => {
       alignItems: "center",
     }}
   >
-    <ReactLoading className={`${margin}`}  type="bars" color="black" />
+    <ReactLoading className={`${margin}`}  type="spin" color="black" />
   </div>
   )
 }

@@ -1,4 +1,3 @@
-import { Rating, ThinRoundedStar } from "@smastrom/react-rating";
 import { useEffect, useRef, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import "react-inner-image-zoom/lib/styles.min.css";
@@ -20,11 +19,15 @@ import toast from "react-hot-toast";
 
 import OpneModalSkeleton from "../Wishlist/OpneModalSkeleton";
 import InnerImageZoom from "react-inner-image-zoom";
+import Rating from "react-rating";
+import { getReview } from "../../redux/Slice/reviewSlice/ReviewSlice";
 
 const OpenCardModal = ({ setModalOpen, data }) => {
+
   const [count, setCount] = useState(1);
   const [skeloading, setSkeletonLoading] = useState(false);
   const [active, setActive] = useState(0);
+  const [review, setReview] = useState([]);
   ///handle Add to cart///
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -34,6 +37,15 @@ const OpenCardModal = ({ setModalOpen, data }) => {
   const { getCartProduct, addToCartLoading } = useSelector(
     (state) => state.cart
   );
+
+  const {GetproductReviewData, getReviewLoading, reviewLoading, DeleteReviewLoading } = useSelector(
+    (state) => state.reviews
+  );
+
+
+   console.log(GetproductReviewData)
+ 
+
   const [newimage, setNewImage] = useState(
     data?.images ? data?.images[0] : data?.image
   );
@@ -50,11 +62,11 @@ const OpenCardModal = ({ setModalOpen, data }) => {
     setSize(index);
   };
 
-  const myStyles = {
-    itemShapes: ThinRoundedStar,
-    activeFillColor: "#ffb700",
-    inactiveFillColor: "#fbf1a9",
-  };
+  // const myStyles = {
+  //   itemShapes: ThinRoundedStar,
+  //   activeFillColor: "#ffb700",
+  //   inactiveFillColor: "#fbf1a9",
+  // };
 
   const increase = () => {
     setCount(count + 1);
@@ -108,6 +120,17 @@ const OpenCardModal = ({ setModalOpen, data }) => {
       setSkeletonLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
+  }, [data]);
+
+
+   useEffect(() => {
+    const sendId={
+      productid:data._id
+    }
+
+ 
+     dispatch(getReview(sendId))
+    
   }, [data]);
 
   return (
@@ -165,9 +188,9 @@ const OpenCardModal = ({ setModalOpen, data }) => {
                 </div>
 
                 {/* Right: Product Info */}
-                <div className="mt-4 md:mt-0">
+                <div className="mt-4 md:mt-0 flex-wrap flex flex-col justify-center ">
                   {/* Badge */}
-                  <div className="inline-block bg-green-600 text-white px-3 py-1 rounded-md text-sm mb-2">
+                  <div className=" w-20 bg-green-600 text-white px-3 py-1 rounded-md text-sm mb-2">
                     <span className="mr-2">{data?.type}</span>
                     {data?.discount}%
                   </div>
@@ -214,17 +237,30 @@ const OpenCardModal = ({ setModalOpen, data }) => {
                   </p>
 
                   {/* Rating */}
-                  <div className="flex items-center mb-4">
+
+                  
+                 <div className="flex items-center  gap-x-2">
+                   
                     <Rating
-                      style={{ maxWidth: 80 }}
-                      value={data?.rating?.rate}
-                      readOnly
-                      itemStyles={myStyles}
+                      initialRating={GetproductReviewData?.length || 0}
+                      emptySymbol={
+                        <i className="fa fa-star-o text-yellow-400 text-lg"></i>
+                      }
+                      fullSymbol={
+                        <i className="fa fa-star text-yellow-400 text-lg"></i>
+                      }
+                      readonly
                     />
-                    <span className="pl-2 text-sm text-gray-700">
-                      {data?.rating?.rate}
+                    
+                   <div className="flex flex-row items-center justify-center gap-x-2">
+                     <span className="pl-2 text-sm text-gray-700">
+                      {GetproductReviewData&& GetproductReviewData?.length}
                     </span>
-                  </div>
+                    <span>ratings</span>
+                   </div>
+
+                 
+                 </div>
 
                   {/* Price */}
                   <div className="flex items-center mb-4">
@@ -242,12 +278,12 @@ const OpenCardModal = ({ setModalOpen, data }) => {
                   </div>
 
                   {/* Quantity & Add to Cart */}
-                  <div className="border-t border-b py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="border-t border-b border-gray-300 py-4 flex  flex-col sm:flex-row sm:items-center gap-4">
                     {data?.quantity > 0 && (
                       <div className="flex items-center">
                         <button
                           onClick={decrease}
-                          className={`px-3 py-1 border rounded-l ${
+                          className={`px-3 py-1 border rounded-l border-gray-300  ${
                             count === 1
                               ? "bg-gray-100 cursor-not-allowed"
                               : "bg-gray-200"
@@ -255,11 +291,11 @@ const OpenCardModal = ({ setModalOpen, data }) => {
                         >
                           -
                         </button>
-                        <div className="px-4 py-1 border">{count}</div>
+                        <div className="px-4 py-1 border border-gray-300 ">{count}</div>
                         <button
                           disabled={count === 5}
                           onClick={increase}
-                          className={`px-3 py-1 border rounded-r ${
+                          className={`px-3 py-1 border border-gray-300  rounded-r ${
                             count === 5
                               ? "bg-gray-100 cursor-not-allowed"
                               : "bg-gray-200"

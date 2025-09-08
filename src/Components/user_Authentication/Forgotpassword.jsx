@@ -4,7 +4,7 @@ import { IoMdEyeOff } from "react-icons/io";
 import "./Commonstyle.scss"
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import logo from "../../assest/Daco_4162933.png"
+
 import { userForgotPassword } from "../../redux/Slice/Userauthslice/userAuthSlice";
 import toast from "react-hot-toast";
 import Loading from "../Share/Loading";
@@ -43,11 +43,7 @@ const Forgotpassword = () => {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 ">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          className="mx-auto h-[95px] w-auto"
-          src={logo}
-
-        />
+       
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Reset your password
         </h2>
@@ -84,7 +80,7 @@ const Forgotpassword = () => {
           <button
             onClick={hadleSubmit}
             type="submit"
-            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm text-white font-semibold "
           >
             Submit
           </button>
@@ -94,7 +90,7 @@ const Forgotpassword = () => {
           Not a member?{" "}
           <Link to="/register"
             href="#"
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            className="font-semibold leading-6 text-black "
           >
             Register
           </Link>

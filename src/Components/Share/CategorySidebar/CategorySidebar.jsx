@@ -212,7 +212,7 @@ const CategorySidebar = (props) => {
       <div className="md:hidden block ">
         <div className="flex items-center justify-between mt-6 px-4 ">
           <Select
-            className="w-48 z-50!"
+            className="w-48 z-20!"
             placeholder="Sort by"
             defaultValue={props.selectedOption}
             onChange={props.setSelectedOption}
@@ -250,7 +250,7 @@ const CategorySidebar = (props) => {
                 ${filteropen ? "translate-x-0" : "translate-x-full"}`}
           >
             {/* Header */}
-            <div className="pt-40 sticky top-0 bg-white z-10 flex justify-between items-center border-b p-4">
+            <div className=" sticky top-0 bg-white z-10 flex justify-between items-center border-b p-4">
               <h1 className="text-lg font-semibold">Filters</h1>
               <RxCross1
                 className="cursor-pointer"

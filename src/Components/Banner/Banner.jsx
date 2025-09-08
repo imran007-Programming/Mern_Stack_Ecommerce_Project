@@ -7,9 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetBanner } from "../../redux/Slice/bannerSlice/bannerSlice";
 
 const Banner = () => {
-  const { GetBannerImages, loading, error } = useSelector(
-    (state) => state.banner
-  );
+  const { GetBannerImages, loading } = useSelector((state) => state.banner);
   const dispatch = useDispatch();
   const [images, setImages] = useState([]);
 
@@ -37,19 +35,22 @@ const Banner = () => {
   };
 
   return (
-    <div className="rounded-3xl w-full sm:pt-16 pt-3">
+    <div className="rounded-3xl w-full sm:pt-6">
       {loading ? (
         // Skeleton Loader
         <div className="animate-pulse w-full rounded-3xl overflow-hidden">
-          <div className="w-full h-[180px] sm:h-[420px] lg:h-[520px] bg-gray-200"></div>
+          <div className="w-full h-[200px] sm:h-[420px] lg:h-[520px] bg-gray-200 rounded-3xl"></div>
         </div>
       ) : (
         <Slider className="slider_main w-full" {...settings}>
           {images &&
             images.map((image, index) => (
-              <div key={index} className="overflow-hidden rounded-3xl">
+              <div
+                key={index}
+                className="overflow-hidden rounded-3xl w-full h-[200px] sm:h-[420px] lg:h-[520px]"
+              >
                 <img
-                  className="w-full h-[180px] sm:h-[420px] lg:h-[520px] object-cover rounded-3xl transition duration-700 transform hover:scale-110"
+                  className="w-full h-full object-cover rounded-3xl transition duration-700 transform hover:scale-105"
                   src={image}
                   alt="Banner"
                 />

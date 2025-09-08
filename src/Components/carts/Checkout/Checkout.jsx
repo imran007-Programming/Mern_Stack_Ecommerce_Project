@@ -6,7 +6,7 @@ import location from "./loaction";
 import codImg from "../../../assest/cod_new.a52482b.png";
 import bkashImg from "../../../assest/bkash_new.5654cab.png";
 import payImg from "../../../assest/ssl_new.3731056.png";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 export default function Checkout() {
   const { getCartProduct } = useSelector((state) => state.cart);
   const [cartProducts, setCartProducts] = useState([]);
@@ -16,6 +16,7 @@ export default function Checkout() {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedZone, setSelectedZone] = useState(null);
   const getlocation = useLocation();
+  const navigate=useNavigate()
   const [shippingDetails, setShippingDetails] = useState({
     name: "",
     phone: "",
@@ -26,7 +27,17 @@ export default function Checkout() {
     address: "",
     notes: "",
   });
+
+
  
+
+  const token = localStorage.getItem("usertoken");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  },[token]);
 
   // Fetch areas based on the selected zone
   useEffect(() => {
@@ -37,8 +48,6 @@ export default function Checkout() {
       setAreas(filteredPostcode);
     }
   }, [selectedZone]);
-
-  console.log(getlocation);
 
   useEffect(() => {
     setCartProducts(getCartProduct || []);
@@ -120,7 +129,7 @@ export default function Checkout() {
   // Handle form submission (example for placing an order)
   const handleSubmit = (e) => {
     e.preventDefault();
-
+   console.log(shippingDetails)
     // You can send this data to a backend server or process it further here.
   };
 

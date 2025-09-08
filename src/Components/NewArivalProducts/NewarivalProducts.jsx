@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, Eye } from "lucide-react"; // icons
 import { addtoCart } from "../../redux/Slice/cartSlice/cartSlice.jsx";
+
 const NewarivalProducts = () => {
-   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeId, setActiveId] = useState(null); // ✅ for mobile toggle
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { newArivalProduct, loading } = useSelector((state) => state.products);
   const token = localStorage.getItem("usertoken");
+
   const handleAddtoCart = (id, quantity) => {
     if (!token) {
       navigate("/login");
@@ -33,6 +36,7 @@ const NewarivalProducts = () => {
         });
     }
   };
+
   useEffect(() => {
     dispatch(newarivalproduct());
   }, [dispatch]);
@@ -85,21 +89,38 @@ const NewarivalProducts = () => {
               ))
             : newArivalProduct?.slice(0, 8)?.map((el) => (
                 <div key={el._id} className="p-4 group relative">
-                  <figure className="relative overflow-hidden rounded-xl shadow-md">
+                  <figure
+                    className="relative overflow-hidden rounded-xl shadow-md"
+                    onClick={() =>
+                      setActiveId(activeId === el._id ? null : el._id)
+                    } // ✅ toggle overlay on tap
+                  >
                     <img
                       src={el.images[0]}
                       alt={el?.productName || "Product"}
                       className="object-cover h-[350px] w-full rounded-xl transition-transform duration-500 group-hover:scale-105"
                     />
 
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                    {/* Hover + Mobile overlay */}
+                    <div
+                      className={`absolute inset-0 bg-black/40 transition-opacity duration-300 flex items-center justify-center gap-3
+                        ${
+                          activeId === el._id
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"
+                        }
+                      `}
+                    >
                       <button className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition">
-                        <ShoppingCart className="cursor-pointer" onClick={() => handleAddtoCart(el._id, 1)} size={20} />
+                        <ShoppingCart
+                          className="cursor-pointer"
+                          onClick={() => handleAddtoCart(el._id, 1)}
+                          size={20}
+                        />
                       </button>
                       <Link to={`/allproduct/${el._id}`}>
                         <button className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition">
-                          <Eye className="cursor-pointer"  size={20} />
+                          <Eye className="cursor-pointer" size={20} />
                         </button>
                       </Link>
                     </div>

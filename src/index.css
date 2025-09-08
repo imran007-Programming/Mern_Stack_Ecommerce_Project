@@ -18,6 +18,12 @@
 /* Now you can define your custom styles */
 * {
   font-family: "Clash Display", sans-serif;
+ 
 
 
+}
+
+
+*:focus {
+  outline: none !important;
 }

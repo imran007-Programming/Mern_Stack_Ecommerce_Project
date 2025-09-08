@@ -5,8 +5,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import "./ProductDetails.scss";
-import { Rating, ThinRoundedStar } from "@smastrom/react-rating";
+
 import { Avatar, Button } from "@mui/material";
+
 import ProgressBar from "@ramonak/react-progress-bar";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import {
@@ -30,6 +31,12 @@ import Skeleton from "../Skeleton/Skeleton.jsx";
 import WishListViewSkeleton from "../Wishlist/WishListViewSkeleton.jsx";
 import InnerImageZoom from "react-inner-image-zoom";
 import OpneModalSkeleton from "../Wishlist/OpneModalSkeleton.jsx";
+import { ThinRoundedStar } from "@smastrom/react-rating";
+// ⭐ Orange star styles
+const fullStar = <FaStar className="text-[#ffb700] text-lg" />;
+const emptyStar = <FaStar className="text-gray-300 text-lg" />;
+import Rating from "react-rating";
+import { FaStar } from "react-icons/fa6";
 const ProductDetails = () => {
   const [newimage, setNewImage] = useState("");
   const [count, setCount] = useState(1);
@@ -40,6 +47,7 @@ const ProductDetails = () => {
   const [tabActive, setTabActive] = useState(0);
 
   const [rating, setRating] = useState(0);
+
   const [description, setDiscription] = useState("");
   const [review, setReview] = useState([]);
   const { id } = useParams();
@@ -275,16 +283,16 @@ const ProductDetails = () => {
     <div className="container mx-auto sm:px-6 px-3">
       <Catslider />
 
-      {productdetaillsLoading ? 
-           <>
-            <div className="sm:hidden block ">
-              <WishListViewSkeleton width={"25px"} />
-            </div>
-          <div className="hidden md:block">
-             <OpneModalSkeleton />
+      {productdetaillsLoading ? (
+        <>
+          <div className="sm:hidden block ">
+            <WishListViewSkeleton width={"25px"} />
           </div>
-           </>
-       : (
+          <div className="hidden md:block">
+            <OpneModalSkeleton />
+          </div>
+        </>
+      ) : (
         <div className="w-full pt-13">
           {/* Top Section (Image + Info) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -297,7 +305,9 @@ const ProductDetails = () => {
                     key={index}
                     onClick={() => imageHandler(el, index)}
                     className={`cursor-pointer border-2 rounded-md  transition-all duration-200 ${
-                      activeImage === index ? "border-gray-500" : "border-gray-300"
+                      activeImage === index
+                        ? "border-gray-500"
+                        : "border-gray-300"
                     }`}
                   >
                     <img
@@ -334,7 +344,9 @@ const ProductDetails = () => {
                       key={index}
                       onClick={() => imageHandler(el, index)}
                       className={`cursor-pointer border-2 rounded-md  transition-all duration-200 ${
-                        activeImage === index ? "border-gray-500" : "border-gray-300"
+                        activeImage === index
+                          ? "border-gray-500"
+                          : "border-gray-300"
                       }`}
                     >
                       <img
@@ -362,12 +374,14 @@ const ProductDetails = () => {
               </h3>
 
               <div className="flex items-center flex-wrap gap-2">
+                {/* ✅ React Rating (readonly average) */}
                 <Rating
-                  style={{ maxWidth: 80 }}
-                  value={ratingNumber()}
-                  readOnly
-                  itemStyles={myStyles}
+                  initialRating={review?.length}
+                  readonly
+                  emptySymbol={emptyStar}
+                  fullSymbol={fullStar}
                 />
+
                 {review?.length ? (
                   <span
                     onClick={scrollToReviews}
@@ -519,25 +533,42 @@ const ProductDetails = () => {
             ref={reviewSectionRef}
             className="w-full mt-5 p-4 sm:p-6 border border-gray-200 rounded-2xl"
           >
+            {/* Tabs */}
             <div className="customtabs">
               <ul className="flex gap-4 border-b pb-2 mb-4">
                 <li>
-                  <Button onClick={() => setTabActive(0)}>Description</Button>
+                  <Button
+                    onClick={() => setTabActive(0)}
+                    sx={{
+                      color: tabActive === 0 ? "black" : "gray",
+                      fontWeight: tabActive === 0 ? "bold" : "normal",
+                    }}
+                  >
+                    Description
+                  </Button>
                 </li>
                 <li>
-                  <Button onClick={() => setTabActive(1)}>
-                    Review({review?.length})
+                  <Button
+                    onClick={() => setTabActive(1)}
+                    sx={{
+                      color: tabActive === 1 ? "black" : "gray",
+                      fontWeight: tabActive === 1 ? "bold" : "normal",
+                    }}
+                  >
+                    Review ({review?.length})
                   </Button>
                 </li>
               </ul>
             </div>
 
+            {/* Description Tab */}
             {tabActive === 0 && (
               <div className="w-full">
                 <p className="text-sm p-3">{productDetails.description}</p>
               </div>
             )}
 
+            {/* Review Tab */}
             {tabActive === 1 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Left side: Reviews */}
@@ -564,11 +595,12 @@ const ProductDetails = () => {
                               <p className="text-sm text-gray-500">
                                 {formatCreatedAt(review.createdAt)}
                               </p>
+                              {/* ✅ Rating row */}
                               <Rating
-                                style={{ maxWidth: 80 }}
-                                value={review?.rating}
-                                readOnly
-                                itemStyles={myStyles}
+                                initialRating={review?.rating}
+                                readonly
+                                emptySymbol={emptyStar}
+                                fullSymbol={fullStar}
                               />
                             </div>
                             <p className="mt-2">{review.description}</p>
@@ -595,40 +627,47 @@ const ProductDetails = () => {
                     <textarea
                       onChange={(e) => setDiscription(e.target.value)}
                       required
-                      className="w-full outline-none border-2 border-gray-200 resize-none p-3 mb-3"
+                      className="w-full outline-none border-2 border-gray-200 resize-none p-3 mb-3 rounded-lg"
                       placeholder="Write a comment..."
                       rows="5"
                       value={description}
                     />
+                    {/* ✅ Interactive Rating */}
                     <Rating
-                      style={{ maxWidth: 180 }}
-                      value={rating}
-                      onChange={setRating}
-                      isRequired
+                      initialRating={rating}
+                      onChange={(newValue) => setRating(newValue)}
+                      emptySymbol={emptyStar}
+                      fullSymbol={fullStar}
                     />
-                    <input
-                      value={userLoggedInData[0]?.firstname || ""}
-                      required
-                      className="w-full sm:w-[45%] my-2 border-2 border-gray-200 p-3"
-                      placeholder="Name"
-                      type="text"
-                    />
-                    <input
-                      value={userLoggedInData[0]?.email || ""}
-                      required
-                      className="w-full sm:w-[45%] border-2 border-gray-200 p-3"
-                      placeholder="Email"
-                      type="email"
-                    />
+                    <div className="flex flex-col sm:flex-row sm:gap-4 mt-3">
+                      <input
+                        value={userLoggedInData[0]?.firstname || ""}
+                        required
+                        className="w-full sm:w-1/2 border-2 border-gray-200 p-3 rounded-lg"
+                        placeholder="Name"
+                        type="text"
+                      />
+                      <input
+                        value={userLoggedInData[0]?.email || ""}
+                        required
+                        className="w-full sm:w-1/2 border-2 border-gray-200 p-3 rounded-lg"
+                        placeholder="Email"
+                        type="email"
+                      />
+                    </div>
                     {reviewLoading ? (
                       <Loading />
                     ) : (
                       <Button
                         onClick={handleSubmit}
                         type="submit"
-                        sx={{ marginTop: "18px" }}
+                        sx={{
+                          marginTop: "18px",
+                          backgroundColor: "black",
+                          color: "white",
+                          "&:hover": { backgroundColor: "#333" },
+                        }}
                         variant="contained"
-                        color="success"
                       >
                         Submit
                       </Button>
@@ -639,16 +678,17 @@ const ProductDetails = () => {
                 {/* Right side: Rating Breakdown */}
                 <div>
                   <h2 className="text-lg sm:text-xl mb-3">Customers Review</h2>
-                  {[5, 4, 3, 2, 1].map((star) => (
-                    <div key={star} className="flex items-center mb-2">
-                      <span className="w-12">{star} star</span>
+                  {[5, 4, 3, 2, 1].map((star, index) => (
+                    <div key={index} className="flex items-center">
+                      <span>{star} star</span>
                       <ProgressBar
-                        className="ml-2 flex-1 max-w-[300px] sm:max-w-[400px]"
+                        className="ml-4 w-[200px] md:w-[400px]"
                         completed={ratingPercentageCalculation(star)}
                         bgColor="#FFB700"
-                        height="16px"
-                        borderRadius="4px"
-                        isLabelVisible
+                        height="20px"
+                        width=""
+                        borderRadius="0px"
+                        isLabelVisible={true}
                         labelColor="white"
                       />
                     </div>

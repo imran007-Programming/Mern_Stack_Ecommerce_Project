@@ -105,7 +105,7 @@ const ListingProductMain = () => {
             onChange={setSelectedOption}
             options={options}
             isSearchable={false}
-            className="w-auto  z-50 "
+            className="w-auto  z-20 "
           />
         </div>
 
