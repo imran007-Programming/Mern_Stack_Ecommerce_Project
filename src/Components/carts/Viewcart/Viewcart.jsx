@@ -43,44 +43,44 @@ const Viewcart = () => {
     dispatch(addtoCart(requestData))
       .then(() => dispatch(getCart()))
       .catch((error) => {})
-      .finally(() => setIsLoading(false)); 
+      .finally(() => setIsLoading(false));
   };
 
   // Handle remove from cart (decrease quantity)
   const handleRemoveFromCart = (id) => {
-    setIsLoading(true); 
+    setIsLoading(true);
     dispatch(deleteCart({ productid: id }))
       .then(() => dispatch(getCart()))
       .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false)); 
+      .finally(() => setIsLoading(false));
   };
 
   // Handle delete single cart item
   const handleDeleteSingleCart = (id) => {
     setIsLoading(true); // Show loading state
-    toast.success("Product successfully removed from cart");
+
     dispatch(deletefulquantityCart({ productid: id })).then(() => {
       dispatch(getCart());
-      setIsLoading(false); 
+      setIsLoading(false);
+      toast.success("Product successfully removed from cart");
     });
   };
 
   const CartItem = ({ data }) => {
     const increaseQuantity = () => {
-      if (data.quantity < 5  ) {
+      if (data.quantity < 5) {
         handleAddToCart(data.productid, 1);
       }
     };
 
     const decreaseQuantity = () => {
-      if (data.quantity > 1 ) {
+      if (data.quantity > 1) {
         handleRemoveFromCart(data.productid);
       }
     };
 
     return (
       <tr className="border-t  border-gray-300 w-full">
-        
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
           <div className="relative flex items-center space-x-4">
             <img
@@ -95,21 +95,19 @@ const Viewcart = () => {
                 className="cursor-pointer w-5 h-5 bg-white rounded-full shadow-[0px_4px_6px_2px_rgba(0,0,0,0.3)] p-1"
               />
             </div>
-
-            
           </div>
         </td>
 
         <td>
           <div>
-              <h1 className="text-sm font-medium text-gray-900">
-                {data.details.productName.length > 20
-                  ? `${data.details.productName.substring(0, 50)}...`
-                  : data.details.productName}
-              </h1>
-            </div>
+            <h1 className="text-sm font-medium text-gray-900">
+              {data.details.productName.length > 20
+                ? `${data.details.productName.substring(0, 50)}...`
+                : data.details.productName}
+            </h1>
+          </div>
         </td>
-        
+
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           ${data.details.price}
         </td>
@@ -153,10 +151,9 @@ const Viewcart = () => {
       {isLoading && (
         <div className="fixed inset-0 z-50 bg-black opacity-50 flex justify-center items-center">
           {/* Spinner */}
-         <ReactLoading type="spin" color="white" />
+          <ReactLoading type="spin" color="white" />
         </div>
-      )
-    }
+      )}
       {getCartProduct?.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 pt-6 ">
           <div className="p-6 shadow-lg ">
@@ -209,7 +206,6 @@ const Viewcart = () => {
                 onClick={() => navigate("/viewcart/checkout")}
                 className="text-white bg-black p-3 text-center text-sm mt-3 uppercase cursor-pointer flex justify-center items-center w-auto"
               >
-                
                 <span> Proceed to Checkout</span>
               </button>
             </div>

@@ -59,8 +59,9 @@ const CartDetails = ({ getCartProduct }) => {
     try {
       const res = await dispatch(deletefulquantityCart(data));
       if (res.payload) {
-        toast.success("Product successfully removed from cart");
+        
         dispatch(getCart());
+        toast.success("Product successfully removed from cart");
       }
     } finally {
       setLoadingProductId(null);

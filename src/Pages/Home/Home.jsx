@@ -7,13 +7,14 @@ import Homecontact from "../../Components/Homecontact/Homecontact";
 import Banner from "../../Components/Banner/Banner";
 import Review from "../../Components/Review/Review";
 import FlotingComponentsMobile from "../../Components/Share/FlotingComponentsMobile";
+import CouponBanner from "../../Components/CuponBanner/CuponBanner";
 
 
 const Home = () => {
   return (
     <div className="container mx-auto sm:px-15 px-2">
       <Banner />
-
+ 
       <Catslider />
       <Allproduct />
      <FlotingComponentsMobile />

@@ -1,212 +1,156 @@
-import React, { useContext, useEffect, useState } from "react";
-import "./Products.scss";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-import LazyLoad from "react-lazyload";
-import { Eye, ShoppingCart } from "lucide-react"; // sleek icons
-
-import { Link, useNavigate } from "react-router-dom";
-import { CartopenContex } from "../../Contexapi/Cartopencontex.jsx";
-import OpenCardModal from "./OpenCardModal.jsx";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addtoCart } from "../../redux/Slice/cartSlice/cartSlice.jsx";
-import { getWishList, addtoWishList, deleteWishList } from "../../redux/Slice/wishListSlice/wishListSlice.js";
-import ReactLoading from "react-loading";
-import ImageSkeleton from "./ImageSkeleton.jsx";
-
+import { useNavigate } from "react-router";
+import { CartopenContex } from "../../Contexapi/Cartopencontex";
+import LazyLoad from "react-lazyload";
+import ImageSkeleton from "./ImageSkeleton";
+import { FaHeart, FaRegHeart } from "react-icons/fa6";
+import { Eye, ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
+import { addtoWishList, deleteWishList, getWishList } from "../../redux/Slice/wishListSlice/wishListSlice";
+import ReactLoading from "react-loading"
+import OpenCardModal from "./OpenCardModal";
+import { addtoCart } from "../../redux/Slice/cartSlice/cartSlice";
 const Products = ({ data }) => {
   const { cartopen, setCartopen } = useContext(CartopenContex);
   const [modalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isWishListLoading, setIsWishListLoading] = useState(false);
-  const [deleteWishListLoading, seDeleteWishListLoading] = useState(false);
-  const [localWishlist, setLocalWishlist] = useState([]);
-  const [imageSrc, setImageSrc] = useState(data.images[0]);
-  const [activeId, setActiveId] = useState(null); 
-  const dispatch = useDispatch();
-  const Navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false); 
+  const [loadingWishlistId, setLoadingWishlistId] = useState(null); 
+  const [activeId, setActiveId] = useState(null);
 
+  
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = localStorage.getItem("usertoken");
 
-  /// Add to cart
-  const handleAddtoCart = (id, quantity) => {
-    if (!token) {
-      Navigate("/login");
-    } else {
-      setIsLoading(true);
-      const payload = { productid: id, quantity };
-      dispatch(addtoCart(payload))
-        .finally(() => setIsLoading(false));
-    }
-  };
+  const { getWishListProduct } = useSelector((state) => state.wishlist);
 
-  /// Calculate discount
-  const handleDiscount = (productPrice) => {
-    const discount = data?.discount;
-    return productPrice - (productPrice * discount) / 100;
-  };
-
-  // Wishlist sync
+  // ✅ Get wishlist on mount
   useEffect(() => {
     dispatch(getWishList());
   }, [dispatch]);
 
-  const { getWishListProduct } = useSelector((state) => state.wishlist);
+  // ✅ Check if product is in wishlist
+  const isInWishlist = getWishListProduct?.some(
+    (item) => item.productid===data._id
+  );
+  
 
-  useEffect(() => {
-    setLocalWishlist(getWishListProduct.map((p) => p.details._id));
-  }, [getWishListProduct]);
+  // ✅ Add to Cart
+  const handleAddtoCart = (id, quantity) => {
+    if (!token) return navigate("/login");
 
-  const isInWishlist = (id) => localWishlist.includes(id);
-
-  const addToWishlistHandler = (id) => {
-    if (!token) {
-      Navigate("/login");
-    } else {
-      setIsWishListLoading(true);
-      setLocalWishlist((prev) => [...prev, id]);
-      dispatch(addtoWishList({ productid: id }))
-        .then(() => dispatch(getWishList()))
-        .catch(() => setLocalWishlist((prev) => prev.filter((i) => i !== id)))
-        .finally(() => setIsWishListLoading(false));
-    }
+    setIsLoading(true);
+    dispatch(addtoCart({ productid: id, quantity }))
+      .finally(() => setIsLoading(false));
   };
 
-  const removeFromWishlistHandler = (id) => {
-    seDeleteWishListLoading(true);
-    setLocalWishlist((prev) => prev.filter((i) => i !== id));
-    dispatch(deleteWishList({ productid: id }))
+  // ✅ Add / Remove Wishlist
+  const toggleWishlist = (id) => {
+    if (!token) return navigate("/login");
+
+    setLoadingWishlistId(id);
+    
+
+    const action = isInWishlist
+      ? deleteWishList({ productid: id })
+      : addtoWishList({ productid: id });
+
+    dispatch(action)
       .then(() => dispatch(getWishList()))
-      .catch(() => setLocalWishlist((prev) => [...prev, id]))
-      .finally(() => seDeleteWishListLoading(false));
+      .finally(() => setLoadingWishlistId(null));
   };
-
-  // Image hover effect
-  const handleHover = () => setTimeout(() => setImageSrc(data.images[1]), 200);
-  const handleMouseLeave = () => setImageSrc(data.images[0]);
 
   return (
     <div className="product-card relative pt-10">
-      
       <div className="product-details border rounded-xl border-gray-200 overflow-hidden group">
-        {/* Discount Badge */}
-        {data?.discount > 0 && (
-          <div className="absolute top-2 left-2 px-3 py-1 text-white text-sm rounded-md bg-purple-600 z-10">
-            {data?.discount}% OFF
-          </div>
-        )}
+        {/* Image + Overlay */}
+        <div
+          className="relative overflow-hidden"
+          onClick={() => setActiveId(activeId === data._id ? null : data._id)}
+        >
+          <LazyLoad once placeholder={<ImageSkeleton />} debounce={100}>
+            <img
+              className="product-image sm:h-[280px] h-[180px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              src={data.images[0]}
+              alt={data.productName}
+            />
+          </LazyLoad>
 
-       
-        
-        {/* Image + Hover Overlay */}
- <div
-  className="relative"
-  onClick={() => setActiveId(activeId === data._id ? null : data._id)} // ✅ toggle overlay on tap
->
-  <LazyLoad once placeholder={<ImageSkeleton />} debounce={100}>
-    <img
-      className="product-image sm:h-[280px] h-[180px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      src={imageSrc}
-      alt={data.productName}
-    />
-  </LazyLoad>
+          {/* Overlay */}
+          <div
+            className={`absolute inset-0 bg-black/40 transition-opacity duration-300 flex items-center  justify-center gap-2 sm:gap-3
+              ${
+                activeId === data._id
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
+              }
+            `}
+          >
+            {/* Wishlist */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleWishlist(data._id);
+              }}
+              className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+            >
+              
+              {loadingWishlistId === data._id ? (
+                <ReactLoading type="spin" height={16} width={16} color="black" />
+              ) : isInWishlist ? (
+                <FaHeart size={18} className="text-red-500" />
+              ) : (
+                <FaRegHeart size={18} className="text-gray-700" />
+              )}
+            </button>
 
-  {/* Hover + Mobile Overlay */}
-  <div
-    className={`absolute inset-0 bg-black/40 transition-opacity duration-300 flex items-center justify-center gap-2 sm:gap-3
-      ${
-        activeId === data._id
-          ? "opacity-100"
-          : "opacity-0 group-hover:opacity-100"
-      }
-    `}
-  >
-    {/* Wishlist Button */}
-    {/* Wishlist Button */}
-            {isInWishlist(data._id) ? (
-              <button
-                onClick={() => removeFromWishlistHandler(data._id)}
-                className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
-              >
-                {deleteWishListLoading ? (
-                  <ReactLoading type="spin" height={18} width={18} color="red" />
-                ) : (
-                  <FaHeart size={20} className="text-red-500" />
-                )}
-              </button>
-            ) : (
-              <button
-                onClick={() => addToWishlistHandler(data._id)}
-                className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
-              >
-                {isWishListLoading ? (
-                  <ReactLoading
-                    type="spin"
-                    height={18}
-                    width={18}
-                    color="black"
-                  />
-                ) : (
-                  <FaRegHeart
-                    size={15}
-                    className="text-gray-700 cursor-pointer"
-                  />
-                )}
-              </button>
-            )}
+            {/* Cart */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddtoCart(data._id, 1);
+              }}
+              className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ReactLoading type="spin" height={14} width={14} color="black" />
+              ) : (
+                <ShoppingCart className="cursor-pointer" size={16} />
+              )}
+            </button>
 
-    {/* Add to Cart */}
-    {data.quantity === 0 ? (
-      <button className="p-2 sm:p-3 bg-gray-400 text-white rounded-full cursor-not-allowed text-xs sm:text-base">
-        OUT
-      </button>
-    ) : (
-      <button
-        onClick={() => handleAddtoCart(data._id, 1)}
-        className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
-      >
-        {isLoading ? (
-          <ReactLoading type="spin" height={14} width={14} color="black" />
-        ) : (
-          <ShoppingCart className="cursor-pointer" size={16} />
-        )}
-      </button>
-    )}
-
-    {/* Quick View */}
-    <button
-      onClick={() => setModalOpen(true)}
-      className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
-    >
-      <Eye className="cursor-pointer" size={16} />
-    </button>
-  </div>
-</div>
-
-
-
-       <Link to={`/allproduct/${data._id}`}>
-        {/* Product Info */}
-        <div className="info p-3">
-          <Link to={`/allproduct/${data._id}`}>
-            <span className="block text-xs text-gray-500">Brand: {data.brand}</span>
-            <h4 className="title text-sm font-medium truncate">
-              {data.productName.length > 30
-                ? data.productName.substring(0, 30) + "..."
-                : data.productName}
-            </h4>
-          </Link>
-
-          <div className="flex justify-between items-center h-12 mt-2">
-            <h4 className="text-sm font-bold">${handleDiscount(data?.price)}</h4>
-            <div className="flex items-center space-x-2">
-              <span className="line-through text-xs text-gray-400">${data?.price}</span>
-              <p className="text-red-500 text-xs">{data?.discount}% off</p>
-            </div>
+            {/* Quick View */}
+            <button
+              onClick={() => setModalOpen(true)}
+              className="p-2 sm:p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+            >
+              <Eye className="cursor-pointer" size={16} />
+            </button>
           </div>
         </div>
+
+        {/* Product Info */}
+        <Link to={`/allproduct/${data._id}`}>
+          <div className="info p-3">
+            <span className="block text-xs text-gray-500">
+              Brand: {data.brand}
+            </span>
+            <h4 className="title text-sm font-medium truncate">
+              {data.productName}
+            </h4>
+            <div className="flex justify-between items-center h-12 mt-2">
+              <h4 className="text-sm font-bold">${data.price}</h4>
+              {data.discount > 0 && (
+                <p className="text-red-500 text-xs">{data.discount}% off</p>
+              )}
+            </div>
+          </div>
         </Link>
       </div>
-  
+
       {modalOpen && <OpenCardModal setModalOpen={setModalOpen} data={data} />}
     </div>
   );

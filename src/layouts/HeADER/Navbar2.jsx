@@ -28,6 +28,7 @@ import ShoppingBag from "../../Components/Share/ShoppingBag";
 import { getWishList } from "../../redux/Slice/wishListSlice/wishListSlice";
 import Navbar from "./Navbar";
 import SearchSkeleton from "../../Components/Share/SearchSkeleton";
+import CouponBanner from "../../Components/CuponBanner/CuponBanner";
 
 const Navbar2 = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -196,6 +197,8 @@ const Navbar2 = () => {
 
   return (
     <>
+    
+
       <nav className="fixed top-0 z-30 left-0 w-full bg-white  shadow-sm">
         <div className="flex justify-between items-center px-4 py-3">
           {/* Left: Logo + Menu Icon */}

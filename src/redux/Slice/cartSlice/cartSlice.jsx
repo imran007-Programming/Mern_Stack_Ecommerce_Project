@@ -4,6 +4,7 @@ import {
   getCartAPi,
   deleteFullCartApi,
   deleteSingleCartApi,
+  emptyFullCartApi,
 } from "../../../api/Cartapi/CartAPi";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -119,6 +120,25 @@ export const deletefulquantityCart = createAsyncThunk(
     }
   }
 );
+///delete fullquantity cart product///
+export const emptyFullquantityCart = createAsyncThunk(
+  "emptyFullquantityCart",
+  async (data) => {
+    try {
+      const response = await emptyFullCartApi(data);
+      if (response.status == 200) {
+        return response.data;
+      } else {
+        toast.error(response.response.data.error);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+
+
 
 ///create Action and reducer///
 
@@ -130,6 +150,9 @@ export const CartSlice = createSlice({
     deleteCartProduct: [],
     deleteCartLoading: false,
     deleteAllquantityCartProduct: [],
+    emptyCartProduct: [],
+
+    emptyCartLoading: false,
     deleteAllquantityCartLoading: false,
     addToCartLoading: false,
     getCartLoading: false,
@@ -195,6 +218,20 @@ export const CartSlice = createSlice({
 
       .addCase(deletefulquantityCart.rejected, (state, action) => {
         state.deleteAllquantityCartLoading = false;
+        state.error = action.payload;
+      })
+
+      ///empty  cart product with all quantity
+      .addCase(emptyFullquantityCart.pending, (state) => {
+        state.emptyCartLoading = true;
+      })
+      .addCase(emptyFullquantityCart.fulfilled, (state, action) => {
+        state.emptyCartLoading = false;
+        state.emptyCartProduct = action.payload;
+      })
+
+      .addCase(emptyFullquantityCart.rejected, (state, action) => {
+        state.emptyCartLoading = false;
         state.error = action.payload;
       });
   },

@@ -8,6 +8,7 @@ import userAuthSlice from "../Slice/Userauthslice/userAuthSlice"
 import cartSlice from "../Slice/cartSlice/cartSlice"
 import ReviewSlice from "../Slice/reviewSlice/ReviewSlice"
 import wishListSlice from "../Slice/wishListSlice/wishListSlice"
+import  OrderSlice  from "../Slice/OrderSlice/OrderSlice"
 
 
 
@@ -24,6 +25,7 @@ export const store = configureStore({
         cart: cartSlice,
         wishlist: wishListSlice,
         reviews: ReviewSlice,
+        order:OrderSlice
     },
     devTools: process.env.NODE_ENV !== 'production' 
 })

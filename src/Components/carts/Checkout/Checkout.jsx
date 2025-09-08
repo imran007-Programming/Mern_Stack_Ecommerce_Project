@@ -1,22 +1,35 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./Checkout.scss";
 import location from "./loaction";
-// replace these with your real payment logo imports
 import codImg from "../../../assest/cod_new.a52482b.png";
 import bkashImg from "../../../assest/bkash_new.5654cab.png";
 import payImg from "../../../assest/ssl_new.3731056.png";
 import { useLocation, useNavigate } from "react-router";
+import { confirmAOrder } from "../../../redux/Slice/OrderSlice/OrderSlice";
+import { userLoggedIn } from "../../../redux/Slice/Userauthslice/userAuthSlice";
+import toast from "react-hot-toast";
+import {
+  clearCartData,
+  deletefulquantityCart,
+  emptyFullquantityCart,
+} from "../../../redux/Slice/cartSlice/cartSlice";
+
 export default function Checkout() {
   const { getCartProduct } = useSelector((state) => state.cart);
+  const { userLoggedInData } = useSelector((state) => state.user);
   const [cartProducts, setCartProducts] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // location states
   const [cities, setCities] = useState(location.Districts);
   const [zones, setZones] = useState([]);
   const [areas, setAreas] = useState([]);
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedZone, setSelectedZone] = useState(null);
-  const getlocation = useLocation();
-  const navigate=useNavigate()
+
+  // shipping & order states
   const [shippingDetails, setShippingDetails] = useState({
     name: "",
     phone: "",
@@ -28,8 +41,9 @@ export default function Checkout() {
     notes: "",
   });
 
-
- 
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
 
   const token = localStorage.getItem("usertoken");
 
@@ -37,9 +51,9 @@ export default function Checkout() {
     if (!token) {
       navigate("/login");
     }
-  },[token]);
+    dispatch(userLoggedIn());
+  }, [token]);
 
-  // Fetch areas based on the selected zone
   useEffect(() => {
     if (selectedZone) {
       const filteredPostcode = location?.postCodes?.postcodes.filter(
@@ -53,7 +67,6 @@ export default function Checkout() {
     setCartProducts(getCartProduct || []);
   }, [getCartProduct]);
 
-  // calculate today + 4 days once
   const deliveryDate = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + 4);
@@ -67,15 +80,14 @@ export default function Checkout() {
     return `${dd}/${mm}/${yyyy}`;
   };
 
-  // compute totals
   const subtotal = cartProducts.reduce(
     (sum, p) => sum + p.details.price * (p.quantity || 1),
     0
   );
-  const shippingCharge = 0;
-  const total = subtotal + shippingCharge;
 
-  // Handle input change for shipping details
+  const shippingCharge = 120;
+  const total = subtotal - discount + shippingCharge;
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setShippingDetails({
@@ -84,7 +96,6 @@ export default function Checkout() {
     });
   };
 
-  // Handle city selection
   const handleCityChange = (e) => {
     const city = JSON.parse(e.target.value);
     setSelectedCity(city);
@@ -93,7 +104,7 @@ export default function Checkout() {
       city: city.name,
     });
 
-    if (city.name == "Dhaka") {
+    if (city.name === "Dhaka") {
       const filteteredUpzila = location?.Dhaka?.dhaka.filter(
         (up) => up.district_id === city.id
       );
@@ -106,10 +117,8 @@ export default function Checkout() {
     }
   };
 
-  // Handle zone selection
   const handleZoneChange = (e) => {
     const zone = JSON.parse(e.target.value);
-    console.log(zone);
     setSelectedZone(zone);
     setShippingDetails({
       ...shippingDetails,
@@ -117,7 +126,6 @@ export default function Checkout() {
     });
   };
 
-  // Handle area selection
   const handleAreaChange = (e) => {
     const area = JSON.parse(e.target.value);
     setShippingDetails({
@@ -126,17 +134,104 @@ export default function Checkout() {
     });
   };
 
-  // Handle form submission (example for placing an order)
-  const handleSubmit = (e) => {
+  // Coupon Apply
+  const handleApplyCoupon = () => {
+    if (couponCode === "DISCOUNT10") {
+      setDiscount(subtotal * 0.1); // 10% off
+    } else if (couponCode === "FLAT50") {
+      setDiscount(50);
+    } else {
+      setDiscount(0);
+      toast.error("invalid copun code");
+    }
+  };
+
+  // Submit Order
+  const handleSubmit = async (e) => {
     e.preventDefault();
-   console.log(shippingDetails)
-    // You can send this data to a backend server or process it further here.
+
+    // ✅ Validate required fields
+    const requiredFields = [
+      { key: "name", label: "Name" },
+      { key: "phone", label: "Phone" },
+      { key: "city", label: "City" },
+      { key: "zone", label: "Zone" },
+      { key: "address", label: "Address" },
+    ];
+
+    for (let field of requiredFields) {
+      if (
+        !shippingDetails[field.key] ||
+        shippingDetails[field.key].trim() === ""
+      ) {
+        toast.error(`${field.label} is required`);
+        return;
+      }
+    }
+
+    if (!paymentMethod) {
+      toast.error("Please select a payment method");
+      return;
+    }
+
+    try {
+      const data = {
+        ...shippingDetails,
+        products: cartProducts.map((item) => ({
+          productId: item.productid,
+          quantity: item.quantity,
+          sizes: item.sizes,
+          productName: item.details.productName,
+        })),
+        userId: userLoggedInData[0]._id,
+        paymentMethod,
+        cupon: couponCode,
+        discount,
+        total,
+      };
+
+      const res = await dispatch(confirmAOrder(data));
+      console.log(res.payload);
+
+      if (res?.payload?.status === 400) {
+        toast.error(res.payload.response.data.message);
+      } else {
+        toast.success("Order placed successfully ✅");
+
+        // Reset form fields after success
+        setShippingDetails({
+          name: "",
+          phone: "",
+          email: "",
+          city: "",
+          zone: "",
+          area: "",
+          address: "",
+          notes: "",
+        });
+        setCouponCode("");
+        setDiscount(0);
+        setPaymentMethod("cod");
+        setSelectedCity(null);
+        setSelectedZone(null);
+        setAreas([]);
+        setZones([]);
+        /* Clear cart data */
+        dispatch(emptyFullquantityCart({ userId: userLoggedInData[0]._id }));
+        dispatch(clearCartData());
+        //Redirect to home page
+        navigate(`/ordersuccess/${userLoggedInData[0]._id}`);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong while placing the order");
+    }
   };
 
   return (
     <div className="container">
       <div className="checkout-grid">
-        {/* ── Shipping Details ──────────────────────────────────────── */}
+        {/* Shipping Details */}
         <div className="shipping-details">
           <h2>Shipping Details</h2>
 
@@ -250,7 +345,7 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* ── Order Summary ──────────────────────────────────────────── */}
+        {/* Order Summary */}
         <div className="order-summary">
           <h2>Your Order</h2>
 
@@ -284,6 +379,13 @@ export default function Checkout() {
                 <td>${subtotal.toFixed(2)}</td>
               </tr>
 
+              {discount > 0 && (
+                <tr className="summary-row">
+                  <td>Discount</td>
+                  <td>- ${discount.toFixed(2)}</td>
+                </tr>
+              )}
+
               <tr className="summary-row">
                 <td>Delivery Charges</td>
                 <td>${shippingCharge.toFixed(2)}</td>
@@ -296,41 +398,64 @@ export default function Checkout() {
             </tbody>
           </table>
 
-          {/* Phone */}
-          <div className="form-group">
-            <label htmlFor="summary-phone">Phone *</label>
-            <input id="summary-phone" type="tel" placeholder="01XXXXXXXXX" />
-          </div>
-
           {/* Coupon */}
           <div className="coupon-group">
-            <input id="coupon" type="text" placeholder="Enter coupon code" />
-            <button>Apply Coupon</button>
+            <input
+              id="coupon"
+              type="text"
+              placeholder="Enter coupon code"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+            />
+            <button type="button" onClick={handleApplyCoupon}>
+              Apply Coupon
+            </button>
           </div>
 
-          {/* Payment methods */}
+          {/* Payment Methods */}
           <div className="payment-methods">
             <div className="method">
-              <input type="radio" id="cod" name="payment" defaultChecked />
+              <input
+                type="radio"
+                id="cod"
+                name="payment"
+                value="cod"
+                checked={paymentMethod === "cod"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
               <label htmlFor="cod">
                 <img src={codImg} alt="Cash on Delivery" />
               </label>
             </div>
             <div className="method">
-              <input type="radio" id="bkash" name="payment" />
+              <input
+                type="radio"
+                id="bkash"
+                name="payment"
+                value="bkash"
+                checked={paymentMethod === "bkash"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
               <label htmlFor="bkash">
                 <img src={bkashImg} alt="bKash" />
               </label>
             </div>
             <div className="method">
-              <input type="radio" id="online" name="payment" />
-              <label htmlFor="online">
+              <input
+                type="radio"
+                id="card"
+                name="payment"
+                value="card"
+                checked={paymentMethod === "card"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <label htmlFor="card">
                 <img src={payImg} alt="Pay Online" />
               </label>
             </div>
           </div>
 
-          {/* Terms & Conditions */}
+          {/* Terms */}
           <div className="terms">
             <input type="checkbox" id="agree" />
             <label htmlFor="agree">
@@ -339,7 +464,7 @@ export default function Checkout() {
             </label>
           </div>
 
-          {/* Place Order Button */}
+          {/* Place Order */}
           <button className="place-order-btn" onClick={handleSubmit}>
             Place Order
           </button>

@@ -111,6 +111,7 @@ const Contact = React.lazy(() => import("./Components/Contact/Contact.jsx"));
 const Blogs = React.lazy(() => import("./Components/Blogs/Blogs.jsx"));
 const Blogsdetails = React.lazy(() => import("./Components/Blogs/Blogsdetails.jsx"));
 const Offers = React.lazy(() => import("./Components/Offer/Offer.jsx"))
+const OrderSuccess = React.lazy(() => import("./Components/success/OrderSuccess.jsx"))
 
 
 const App = () => {
@@ -201,7 +202,7 @@ const App = () => {
       <BreadcrumbProvider>
         <NavProvider>
 
-
+            
           {/* Wrap Routes with Suspense for lazy loading */}
           <Suspense
             fallback={
@@ -349,6 +350,15 @@ const App = () => {
                   <Layout>
                     <Shipping />
                   </Layout>
+                }
+              />
+
+              <Route
+                path="/ordersuccess/:userid"
+                element={
+                 
+                    <OrderSuccess />
+                 
                 }
               />
               <Route

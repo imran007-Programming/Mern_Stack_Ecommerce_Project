@@ -25,3 +25,9 @@ export const deleteFullCartApi = async (data, header) => {
     return await commonrequest("DELETE", `${BASE_URL}/carts/api/removeallitemsfromcart/${data.productid}`, data, header, "user")
 
 }
+
+/* empty fullcart after place order */
+export const emptyFullCartApi = async (data, header) => {
+    return await commonrequest("DELETE", `${BASE_URL}/carts/api/emptycart`, data, header, "user")
+
+}

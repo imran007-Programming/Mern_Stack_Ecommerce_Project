@@ -14,8 +14,9 @@ const NewarivalProducts = () => {
   const navigate = useNavigate();
   const { newArivalProduct, loading } = useSelector((state) => state.products);
   const token = localStorage.getItem("usertoken");
-
+  const [isLoadingId,setIsloadingId]=useState("")
   const handleAddtoCart = (id, quantity) => {
+    setIsloadingId(id)
     if (!token) {
       navigate("/login");
     } else {
@@ -32,6 +33,7 @@ const NewarivalProducts = () => {
         })
         .catch((error) => {})
         .finally(() => {
+          setIsloadingId(null)
           setIsLoading(false);
         });
     }
@@ -93,7 +95,7 @@ const NewarivalProducts = () => {
                     className="relative overflow-hidden rounded-xl shadow-md"
                     onClick={() =>
                       setActiveId(activeId === el._id ? null : el._id)
-                    } // ✅ toggle overlay on tap
+                    }
                   >
                     <img
                       src={el.images[0]}
@@ -102,23 +104,35 @@ const NewarivalProducts = () => {
                     />
 
                     {/* Hover + Mobile overlay */}
+
                     <div
-                      className={`absolute inset-0 bg-black/40 transition-opacity duration-300 flex items-center justify-center gap-3
-                        ${
-                          activeId === el._id
-                            ? "opacity-100"
-                            : "opacity-0 group-hover:opacity-100"
-                        }
-                      `}
+                      className={`absolute inset-0 bg-black/40 transition-opacity duration-300 flex items-center justify-center gap-3 ${
+                        activeId === el._id
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100"
+                      }`}
                     >
-                      <button className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition">
-                        <ShoppingCart
-                          className="cursor-pointer"
-                          onClick={() => handleAddtoCart(el._id, 1)}
-                          size={20}
-                        />
+                      {/* Add to Cart */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); 
+                          handleAddtoCart(el._id, 1);
+                        }}
+                        className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition"
+                        disabled={isLoading}
+                      >
+                        {isLoadingId===el._id ? (
+                          <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <ShoppingCart className="cursor-pointer" size={20} />
+                        )}
                       </button>
-                      <Link to={`/allproduct/${el._id}`}>
+
+                      {/* Quick View */}
+                      <Link
+                        to={`/allproduct/${el._id}`}
+                        onClick={(e) => e.stopPropagation()} // ✅ prevent closing on link click
+                      >
                         <button className="p-3 bg-white rounded-full shadow hover:bg-gray-200 transition">
                           <Eye className="cursor-pointer" size={20} />
                         </button>

@@ -35,7 +35,7 @@ const Banner = () => {
   };
 
   return (
-    <div className="rounded-3xl w-full sm:pt-6">
+    <div className="rounded-3xl w-full sm:pt-6 ">
       {loading ? (
         // Skeleton Loader
         <div className="animate-pulse w-full rounded-3xl overflow-hidden">
@@ -50,7 +50,7 @@ const Banner = () => {
                 className="overflow-hidden rounded-3xl w-full h-[200px] sm:h-[420px] lg:h-[520px]"
               >
                 <img
-                  className="w-full h-full object-cover rounded-3xl transition duration-700 transform hover:scale-105"
+                  className="w-full h-full sm:object-cover rounded-3xl transition duration-700 transform hover:scale-105"
                   src={image}
                   alt="Banner"
                 />
