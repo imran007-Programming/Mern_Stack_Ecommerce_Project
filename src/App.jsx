@@ -200,7 +200,7 @@ const App = () => {
   return (
     <div className="">
       <BreadcrumbProvider>
-        <NavProvider>
+       
 
             
           {/* Wrap Routes with Suspense for lazy loading */}
@@ -372,8 +372,8 @@ const App = () => {
             </Routes>
           </Suspense>
 
-          <Toaster position="bottom-right" reverseOrder={true} />
-        </NavProvider>
+          <Toaster position="top-right" reverseOrder={true} />
+       
         <ScroolToTop />
       </BreadcrumbProvider>
     </div>

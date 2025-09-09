@@ -15,6 +15,8 @@ const Allproduct = () => {
     error,
   } = useSelector((state) => state.products);
 
+  
+
   const { getCartProduct } = useSelector((state) => state.cart);
   const [skeletonLoading, setSkeletonLoading] = useState(true);
   const productApi = () => {

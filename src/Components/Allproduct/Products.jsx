@@ -18,7 +18,7 @@ const Products = ({ data }) => {
   const [loadingWishlistId, setLoadingWishlistId] = useState(null); 
   const [activeId, setActiveId] = useState(null);
 
-  
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ const Products = ({ data }) => {
 
   const { getWishListProduct } = useSelector((state) => state.wishlist);
 
+ 
   // ✅ Get wishlist on mount
   useEffect(() => {
     dispatch(getWishList());
@@ -61,6 +62,10 @@ const Products = ({ data }) => {
       .then(() => dispatch(getWishList()))
       .finally(() => setLoadingWishlistId(null));
   };
+
+
+
+
 
   return (
     <div className="product-card relative pt-10">

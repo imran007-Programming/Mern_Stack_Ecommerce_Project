@@ -18,6 +18,11 @@ const FlotingComponentsMobile = () => {
   const { getCartProduct } = useSelector((state) => state.cart);
   const { getWishListProduct } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
+  
+      
+
+
+
 
   useEffect(() => {
     dispatch(userLoggedIn());

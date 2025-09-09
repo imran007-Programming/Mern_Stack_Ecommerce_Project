@@ -7,15 +7,18 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './redux/App/Store';
 import CartProvider from './Contexapi/Cartopencontex';
+import NavProvider from './Contexapi/NavopenContex';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
     <BrowserRouter>
+     <NavProvider>
      <CartProvider>
     <Provider store={store}>
     <App />
     </Provider>
     </CartProvider>
+    </NavProvider>
     </BrowserRouter>
   
 );

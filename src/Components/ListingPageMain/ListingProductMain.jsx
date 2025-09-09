@@ -9,6 +9,7 @@ import CategorySidebar from "../Share/CategorySidebar/CategorySidebar";
 import Products from "../Allproduct/Products";
 import Skeleton from "../Skeleton/Skeleton";
 import ReactLoading from "react-loading";
+import Pagination from "../Share/Pagination";
 
 const ListingProductMain = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -19,6 +20,7 @@ const ListingProductMain = () => {
   const categoryid = params.get("categoryId");
   const dispatch = useDispatch();
   const [isFetching, setIsFetching] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { GetallBrand } = useSelector((state) => state.brand);
 
@@ -32,7 +34,8 @@ const ListingProductMain = () => {
   }, [dispatch]);
 
   const {
-    filterproducts: { products },
+    filterproducts: { products, pagination },
+
     loading,
   } = useSelector((state) => state.products);
 
@@ -45,13 +48,15 @@ const ListingProductMain = () => {
         size: size,
         brand: brand.toLowerCase(),
         sortBy: selectedOption?.value,
-        limit: selectedOption?.value,
+        limit: selectedOption?.value ? selectedOption.value : 1,
+        page: currentPage,
       };
+
       await dispatch(filterProducts(data));
       setIsFetching(false);
     };
     fetchData();
-  }, [categoryid, value1, size, selectedOption, brand, dispatch]);
+  }, [categoryid, value1, size, selectedOption, brand, dispatch, currentPage]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -137,14 +142,14 @@ const ListingProductMain = () => {
             filterBySize={filterBySize}
           />
         </div>
-        <div className="col-span-3">
+        <div className="col-span-3 ">
           <div className="md:hidden">
             <h1 className="text-[gray] my-4">
               We found <span className="text-[green]">{products?.length}</span>{" "}
               items for you!!
             </h1>
           </div>
-          <div className="productRow">
+          <div className="productRow flex">
             <div className="grid sm:grid-cols-4 grid-cols-2 gap-6 md:gap-5 mt-5">
               {isFetching
                 ? Array.from({ length: 10 }).map((_, index) => (
@@ -154,6 +159,13 @@ const ListingProductMain = () => {
                     <Products key={index} data={i} tag={i.type} />
                   ))}
             </div>
+          </div>
+          <div className="ml-auto  w-fit">
+            <Pagination
+              pageCount={pagination?.totalPages}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </div>

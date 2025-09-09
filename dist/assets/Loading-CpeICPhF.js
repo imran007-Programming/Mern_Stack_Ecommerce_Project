@@ -1,0 +1,1 @@
+import{j as e,S as t}from"./index-UJMJvy5A.js";const a=({margin:s})=>e.jsx("div",{style:{display:"flex",justifyContent:"center",alignItems:"center"},children:e.jsx(t,{className:`${s}`,type:"spin",color:"black"})});export{a as L};

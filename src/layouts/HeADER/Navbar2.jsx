@@ -29,6 +29,7 @@ import { getWishList } from "../../redux/Slice/wishListSlice/wishListSlice";
 import Navbar from "./Navbar";
 import SearchSkeleton from "../../Components/Share/SearchSkeleton";
 import CouponBanner from "../../Components/CuponBanner/CuponBanner";
+import { isMoment } from "moment/moment";
 
 const Navbar2 = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -40,6 +41,7 @@ const Navbar2 = () => {
   const [searchData, setSearchData] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [mounted, setMounted] = useState(false);
   const [isTransition, setIsTransition] = useState(false);
   const { getCartProduct, addtoCart } = useSelector((state) => state.cart);
   const {
@@ -195,10 +197,12 @@ const Navbar2 = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <>
-    
-
       <nav className="fixed top-0 z-30 left-0 w-full bg-white  shadow-sm">
         <div className="flex justify-between items-center px-4 py-3">
           {/* Left: Logo + Menu Icon */}
@@ -275,9 +279,7 @@ const Navbar2 = () => {
                   className="absolute top-full left-0 w-full bg-white max-h-64 overflow-y-auto shadow-lg rounded mt-1 z-30"
                 >
                   {searchLoading ? (
-                   
-                      <SearchSkeleton />
-                  
+                    <SearchSkeleton />
                   ) : searchData?.length > 0 ? (
                     searchData.map((i, index) => (
                       <Link
@@ -339,197 +341,224 @@ const Navbar2 = () => {
         </div>
 
         {/* Mobile Search */}
-    
-          <div className="md:hidden relative px-4 pb-2">
-            <div className="flex items-center">
-              <input
-                type="text"
-                className="py-2 px-4 w-full rounded sm:border lg:border border-gray-300 focus:outline-none placeholder:text-sm font-thin"
-                placeholder="Search for products"
-                onChange={handleSearch}
-                value={search}
-                onFocus={() => setShowSearchResults(true)}
-              />
-              <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 ml-2" />
-            </div>
 
-            {/* Mobile Search Results */}
-            {search && showSearchResults && (
-              <div
-                ref={searchRef}
-                className="absolute top-full left-0 w-full bg-white max-h-64 overflow-y-auto shadow-lg rounded mt-1 z-30"
-              >
-                {searchLoading ? (
-                 
-                       <SearchSkeleton />
-                 
-                ) : searchData?.length > 0 ? (
-                  searchData.map((i, index) => (
-                    <Link
-                      key={index}
-                      to={`/allproduct/${i._id}`}
-                      onClick={() => setSearch("")}
-                      className="flex items-center px-3 py-2 hover:bg-gray-100"
-                    >
-                      <img
-                        className="w-10 h-10 mr-3 object-cover rounded"
-                        src={i.images[0]}
-                        alt={i.productName}
-                      />
-                      <span className="text-sm">
-                        {i.productName.slice(0, 50)}
-                      </span>
-                    </Link>
-                  ))
-                ) : (
-                  <div className="py-4 text-center text-sm text-gray-600">
-                    Sorry! No product found
-                  </div>
-                )}
-              </div>
-            )}
+        <div className="md:hidden relative px-4 pb-2">
+          <div className="flex items-center">
+            <input
+              type="text"
+              className="py-2 px-4 w-full rounded sm:border lg:border border-gray-300 focus:outline-none placeholder:text-sm font-thin"
+              placeholder="Search for products"
+              onChange={handleSearch}
+              value={search}
+              onFocus={() => setShowSearchResults(true)}
+            />
+            <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 ml-2" />
           </div>
-      
+
+          {/* Mobile Search Results */}
+          {search && showSearchResults && (
+            <div
+              ref={searchRef}
+              className="absolute top-full left-0 w-full bg-white max-h-64 overflow-y-auto shadow-lg rounded mt-1 z-30"
+            >
+              {searchLoading ? (
+                <SearchSkeleton />
+              ) : searchData?.length > 0 ? (
+                searchData.map((i, index) => (
+                  <Link
+                    key={index}
+                    to={`/allproduct/${i._id}`}
+                    onClick={() => setSearch("")}
+                    className="flex items-center px-3 py-2 hover:bg-gray-100"
+                  >
+                    <img
+                      className="w-10 h-10 mr-3 object-cover rounded"
+                      src={i.images[0]}
+                      alt={i.productName}
+                    />
+                    <span className="text-sm">
+                      {i.productName.slice(0, 50)}
+                    </span>
+                  </Link>
+                ))
+              ) : (
+                <div className="py-4 text-center text-sm text-gray-600">
+                  Sorry! No product found
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Navbar Links */}
-        <div
-          className={`${
-            isVisible ? "hidden" : "block  "
-          }`}
-        >
+        {/* second nav */}
+        <div className={`${isVisible ? "hidden" : "block  "}`}>
           <Navbar />
         </div>
       </nav>
 
       {/* side navbar for mobile */}
-      {navOpen && (
+      {mounted && navOpen && (
         <div className="fixed inset-0 z-50 bg-black opacity-50 "></div>
       )}
-      <div
-        ref={navRef}
-        className={`fixed top-0 left-0 z-50 w-[58%] h-full bg-white shadow-md transition-transform duration-700 ease-in-out ${
-          navOpen ? "translate-x-0" : "-translate-x-full"
-        } md:hidden`}
-      >
-        <div className="p-4 flex justify-between items-center">
-          <Link to="/">
-            <img src={logo} alt="Online Nest Logo" className="h-10" />
-          </Link>
-          <button
-            onClick={() => setNavOpen(false)}
-            className="text-gray-700 hover:text-gray-900 focus:outline-none"
-          >
-            <XMarkIcon className="w-6 h-6" />
-          </button>
-        </div>
+     <div
+  ref={navRef}
+  className={`fixed top-0 left-0 z-50 w-[58%] h-full bg-white shadow-md transition-transform duration-700 ease-in-out ${
+    navOpen ? "translate-x-0" : "-translate-x-full"
+  } md:hidden`}
+>
+  <div className="p-4 flex justify-between items-center">
+    <Link to="/">
+      <img src={logo} alt="Online Nest Logo" className="h-10" />
+    </Link>
+    <button
+      onClick={() => setNavOpen(false)}
+      className="text-gray-700 hover:text-gray-900 focus:outline-none"
+    >
+      <XMarkIcon className="w-6 h-6" />
+    </button>
+  </div>
 
-        <div className="flex flex-col items-start p-4 space-y-4 w-full text-sm font-thin">
-          <Link
-            to="/home"
-            className="text-gray-700 hover:text-gray-900 w-full border-b py-2"
-          >
-            HOME
-          </Link>
+  <div className="flex flex-col items-start border-t  border-gray-300 space-y-4 w-full text-sm font-thin">
+    {/* Home */}
+    <Link
+      to="/"
+      className="text-gray-700 border-b px-5 border-gray-300 hover:text-black w-full   py-2"
+    >
+      HOME
+    </Link>
 
-          <button
-            onClick={() => toggleSubMenu("categories")}
-            className={`w-full ${
-              expandedMenu === "categories"
-                ? "bg-red-700 text-white ease-in-out duration-700"
-                : ""
-            }  text-left text-gray-700  flex justify-between items-center border-b py-2`}
-          >
-            CATEGORIES{" "}
-            {expandedMenu === "categories" ? (
-              <ChevronDownIcon className="w-4 h-4 ml-2" />
-            ) : (
-              <ChevronUpIcon className="w-4 h-4 ml-2" />
-            )}
-          </button>
-          {expandedMenu === "categories" && (
-            <div className="pl-4 space-y-1 flex flex-col w-full border-b">
-              {categories.length &&
-                categories.map((cat, index) => (
-                  <Link
-                    key={index}
-                    onClick={() => setNavOpen(!navOpen)}
-                    to={`/allproducts?categoryId=${cat._id}`}
-                    className="text-gray-700 hover:text-gray-900 w-full border-b py-2 text-sm"
-                  >
-                    {cat.categoryName}
-                  </Link>
-                ))}
-            </div>
-          )}
+    {/* Shop */}
+    <Link
+      to="/allproducts"
+      className="text-gray-700 hover:text-black w-full border-b px-5 border-gray-300 py-2"
+    >
+      SHOP
+    </Link>
 
-          <button
-            onClick={() => toggleSubMenu("OnlineNest")}
-            className={`${
-              expandedMenu === "OnlineNest"
-                ? "bg-red-700 text-white ease-in-out duration-700"
-                : ""
-            }  w-full text-left text-gray-700  flex justify-between items-center border-b py-2`}
-          >
-            Online Nest{" "}
-            {expandedMenu === "OnlineNest" ? (
-              <ChevronUpIcon className="w-4 h-4 ml-2" />
-            ) : (
-              <ChevronDownIcon className="w-4 h-4 ml-2" />
-            )}
-          </button>
-          {expandedMenu === "OnlineNest" && (
-            <div className="pl-4 space-y-1 flex flex-col border-b">
-              <Link
-                href="#"
-                className="text-gray-700 hover:text-gray-900 border-b py-2"
-              >
-                Subcategory A
-              </Link>
-              <Link
-                href="#"
-                className="text-gray-700 hover:text-gray-900 border-b py-2"
-              >
-                Subcategory B
-              </Link>
-            </div>
-          )}
-
-          <Link
-            href="#"
-            className="text-gray-700 hover:text-gray-900 border-b py-2 w-full"
-          >
-            Contuct Us
-          </Link>
-          <div className="flex space-x-4 my-4 w-full">
-            <button
-              onClick={handleLogin}
-              className="px-4 py-2 bg-black text-white "
+    {/* Categories */}
+    <button
+      onClick={() => toggleSubMenu("categories")}
+      className={`w-full flex justify-between items-center border-b px-5 border-gray-300 py-2 text-left ${
+        expandedMenu === "categories"
+          ? "bg-black text-white ease-in-out duration-700"
+          : "text-gray-700 hover:text-black"
+      }`}
+    >
+      CATEGORIES{" "}
+      {expandedMenu === "categories" ? (
+        <ChevronDownIcon className="w-4 h-4 ml-2" />
+      ) : (
+        <ChevronUpIcon className="w-4 h-4 ml-2" />
+      )}
+    </button>
+    {expandedMenu === "categories" && (
+      <div className="pl-4 space-y-1 flex flex-col w-full border-b px-5 border-gray-300">
+        {categories.length &&
+          categories.map((cat, index) => (
+            <Link
+              key={index}
+              onClick={() => setNavOpen(false)}
+              to={`/allproducts?categoryId=${cat._id}`}
+              className="text-gray-700 hover:text-black w-full border-b px-5 border-gray-300 py-2 text-sm"
             >
-              Login
-            </button>
-            <button
-              onClick={handleRegister}
-              className="px-4 py-2 bg-red-500 text-white "
-            >
-              Register
-            </button>
-          </div>
-          <div className="flex justify-center space-x-4 w-full py-4 border-t">
-            <Link href="#" className="text-blue-600">
-              <FaFacebook className="w-6 h-6" />
+              {cat.categoryName}
             </Link>
-            <Link href="#" className="text-red-600">
-              <BsYoutube className="w-6 h-6" />
-            </Link>
-            <Link href="#" className="text-pink-600">
-              <BsInstagram className="w-6 h-6" />
-            </Link>
-          </div>
-        </div>
+          ))}
       </div>
+    )}
+
+    {/* Online Nest */}
+    <button
+      onClick={() => toggleSubMenu("OnlineNest")}
+      className={`w-full flex justify-between items-center border-b px-5 border-gray-300 py-2 text-left ${
+        expandedMenu === "OnlineNest"
+          ? "bg-black text-white ease-in-out duration-700"
+          : "text-gray-700 hover:text-black"
+      }`}
+    >
+      Online Nest{" "}
+      {expandedMenu === "OnlineNest" ? (
+        <ChevronUpIcon className="w-4 h-4 ml-2" />
+      ) : (
+        <ChevronDownIcon className="w-4 h-4 ml-2" />
+      )}
+    </button>
+    {expandedMenu === "OnlineNest" && (
+      <div className="pl-4 space-y-1 flex flex-col border-b px-5 border-gray-300">
+        <Link
+          to="#"
+          className="text-gray-700 hover:text-black border-b px-5 border-gray-300 py-2"
+        >
+          Subcategory A
+        </Link>
+        <Link
+          to="#"
+          className="text-gray-700 hover:text-black border-b px-5 border-gray-300 py-2"
+        >
+          Subcategory B
+        </Link>
+      </div>
+    )}
+
+    {/* Offers */}
+    <Link
+      to="/offers"
+      className="text-gray-700 hover:text-black border-b px-5 border-gray-300 py-2 w-full"
+    >
+      OFFERS
+    </Link>
+
+    {/* Blogs */}
+    <Link
+      to="/blogs"
+      className="text-gray-700 hover:text-black border-b px-5 border-gray-300 py-2 w-full"
+    >
+      BLOGS
+    </Link>
+
+    {/* Contact */}
+    <Link
+      to="/contact"
+      className="text-gray-700 hover:text-black border-b px-5 border-gray-300 py-2 w-full"
+    >
+      CONTACT US
+    </Link>
+
+    {/* Auth Buttons */}
+    <div className="flex space-x-4 my-4 w-full border-b px-5 border-gray-300 pb-4">
+      <button
+        onClick={handleLogin}
+        className="px-4 py-2 bg-black text-white"
+      >
+        Login
+      </button>
+      <button
+        onClick={handleRegister}
+        className="px-4 py-2 bg-black text-white"
+      >
+        Register
+      </button>
+    </div>
+
+    {/* Social Links */}
+    <div className="flex justify-center space-x-4 w-full py-4 border-t border-gray-300">
+      <Link to="#" className="text-blue-600">
+        <FaFacebook className="w-6 h-6" />
+      </Link>
+      <Link to="#" className="text-red-600">
+        <BsYoutube className="w-6 h-6" />
+      </Link>
+      <Link to="#" className="text-pink-600">
+        <BsInstagram className="w-6 h-6" />
+      </Link>
+    </div>
+  </div>
+</div>
+
 
       {/* Cart Sidebar */}
-      {cartopen && (
+      {mounted && cartopen && (
         <div className="fixed inset-0 z-50 bg-black opacity-50 "></div>
       )}
       <div
@@ -541,7 +570,6 @@ const Navbar2 = () => {
         {/* Cart items should be mapped here */}
         <CartDetails getCartProduct={getCartProduct} />
       </div>
-      {/* second nav */}
     </>
   );
 };

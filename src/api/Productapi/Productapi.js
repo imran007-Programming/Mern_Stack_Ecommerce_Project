@@ -90,9 +90,9 @@ export const searchProductApi = async (data, header) => {
 
 export const filterproductsApi = async (data, header) => {
 
-   
+   console.log(data.page)
 
-  return await commonrequest("GET", `${BASE_URL}/product/api/getproduct?categoryId=${data.selectedCategory}&price=${data.price}&sizes=${data.size}&brand=${data.brand}&sortBy=${data.sortBy}&limit=${data.limit}`, "", header, "admin")
+  return await commonrequest("GET", `${BASE_URL}/product/api/getproduct?categoryId=${data.selectedCategory}&price=${data.price}&sizes=${data.size}&brand=${data.brand}&sortBy=${data.sortBy}&limit=${data.limit}&page=${data.page}`, "", header, "admin")
 }
 
 
