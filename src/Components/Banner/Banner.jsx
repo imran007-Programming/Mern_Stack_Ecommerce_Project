@@ -44,7 +44,7 @@ const Banner = () => {
       ) : (
         <Slider className="slider_main w-full" {...settings}>
           {images &&
-            images.map((image, index) => (
+            images.reverse().map((image, index) => (
               <div
                 key={index}
                 className="overflow-hidden rounded-3xl w-full h-[200px] sm:h-[420px] lg:h-[520px]"

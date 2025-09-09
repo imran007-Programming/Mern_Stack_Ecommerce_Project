@@ -1,19 +1,32 @@
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { adminAddBanner } from "../../redux/Slice/bannerSlice/bannerSlice";
+import {
+  adminAddBanner,
+  deleteBannerImages,
+  GetBanner,
+} from "../../redux/Slice/bannerSlice/bannerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../Share/Loading";
 
 const AddBannerImages = () => {
   const [files, setFiles] = useState([]);
+  const [isloadingId, setIsLoadingId] = useState("");
+  const [isloading,setIsLoading]=useState(false)
+
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.banner);
+  const { GetBannerImages, loading } = useSelector((state) => state.banner);
+
+  
+
+  useEffect(() => {
+    dispatch(GetBanner());
+  }, [dispatch]);
 
   /// Handle file selection
   const handleimgupload = (e) => {
     const newfiles = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...newfiles]); // allow multiple adds
+    setFiles((prev) => [...prev, ...newfiles]);
   };
 
   /// Handle drag & drop
@@ -32,7 +45,8 @@ const AddBannerImages = () => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const addproduct = (e) => {
+  const addproduct = async(e) => {
+   
     e.preventDefault();
 
     if (files.length === 0) {
@@ -42,22 +56,75 @@ const AddBannerImages = () => {
         "Content-Type": "multipart/form-data",
       };
 
-      dispatch(adminAddBanner({ files, config }))
-        .then((res) => {
-          if (res.payload) {
+      try {
+         setIsLoading(true)
+       const res=await dispatch(adminAddBanner({ files, config }))
+       if (res.payload) {
+            dispatch(GetBanner());
             setFiles([]);
             toast.success("Banner uploaded successfully");
+           
           }
-        })
-        .catch((error) => {
-          toast.error(error.message);
-        });
+
+      } catch (error) {
+         toast.error(error.message);
+      }finally{
+         setIsLoading(false)
+      }
+
+      
+      
     }
+  };
+
+  /* Delete Banner Images */
+  const handleDelteBannerImages = async (url, id) => {
+     setIsLoadingId(url);
+    const data = {
+      bannerId: id,
+      imageUrl: url,
+    };
+
+    try {
+     
+      const res = await dispatch(deleteBannerImages(data));
+       await dispatch(GetBanner())
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingId(null);
+    }
+    
   };
 
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto">
       <p className="text-2xl mb-4">Upload Banner Images</p>
+
+      <div className="flex flex-wrap gap-6">
+        {GetBannerImages?.flatMap((img) =>
+          img.images.map((el, index) => (
+            <React.Fragment key={`${img._id}-${index}`}>
+              {isloadingId === el ? (
+                <Loading />
+              ) : (
+                <div className="flex relative">
+                  <img className=" w-40 h-30 rounded-xl" src={el} />
+                  <div
+                    onClick={() => {
+                      handleDelteBannerImages(el, img._id);
+                    }}
+                    className="bg-black flex justify-center items-center rounded-2xl w-4 h-4  p-3 absolute -right-3 -top-3 cursor-pointer"
+                  >
+                    <span className="">❌</span>
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
+          ))
+        )}
+      </div>
 
       {/* Upload Box */}
       <div
@@ -122,18 +189,15 @@ const AddBannerImages = () => {
       </div>
 
       {/* Submit button */}
-      <div className="mt-6 w-full">
-        {loading ? (
-          <Loading />
-        ) : (
-          <button
+      <div className="my-6 w-full">
+        <button
+            disabled={isloading}
             onClick={addproduct}
             type="submit"
-            className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className={`flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm ${!files.length?'bg-gray-400':"bg-black"}`}
           >
-            Submit
+           {isloading?<Loading/>: "Submit"}
           </button>
-        )}
       </div>
     </div>
   );

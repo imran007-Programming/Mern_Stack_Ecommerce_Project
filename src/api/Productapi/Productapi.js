@@ -125,16 +125,5 @@ export const getSingleProductApi = async (data, header) => {
 }
 
 
-// ADD Banner  Api//
-
-export const addBannerAPi = async (data, header) => {
-  return await commonrequest("POST", `${BASE_URL}/product/api/addbannerimage`, data, header, "admin")
-}
-
-// GEt Banner  Api//
-
-export const GetBannerApi = async (header) => {
-  return await commonrequest("GET", `${BASE_URL}/product/api/getbannerimages`, "", header, "admin")
-}
 
 

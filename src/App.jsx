@@ -372,7 +372,7 @@ const App = () => {
             </Routes>
           </Suspense>
 
-          <Toaster position="top-right" reverseOrder={true} />
+          <Toaster position="bottom-right" reverseOrder={true} />
        
         <ScroolToTop />
       </BreadcrumbProvider>
